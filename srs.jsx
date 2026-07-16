@@ -15,8 +15,8 @@ const SRS = (function(){
     if (d === 0) return 'agora';
     if (d === 1) return '1 dia';
     if (d < 30) return d + ' dias';
-    if (d < 90) return Math.round(d/30) + ' meses';
-    return Math.round(d/30) + ' meses';
+    const meses = Math.round(d/30);
+    return meses === 1 ? '1 mês' : meses + ' meses';
   };
 
   function load(){
