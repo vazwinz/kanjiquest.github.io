@@ -23,14 +23,14 @@ const SRS = (function(){
     try { return JSON.parse(localStorage.getItem(KEY)) || null; } catch(e){ return null; }
   }
   function blank(){
-    return { now: Date.now(), cards: {} };  // cards[id] = {stage, due, seen, lapses}
+    return { now: Date.now(), offset: 0, cards: {} };  // cards[id] = {stage, due, seen, lapses}
   }
   function save(state){
     try { localStorage.setItem(KEY, JSON.stringify(state)); } catch(e){}
   }
 
-  // estado "virtual" do relógio: permite avançar dias na demo
-  function clock(state){ return state.now; }
+  // relógio real (data do sistema) + deslocamento acumulado pelo botão de demo
+  function clock(state){ return Date.now() + (state.offset||0); }
 
   function card(state, id){
     return state.cards[id] || null;
@@ -117,9 +117,9 @@ const SRS = (function(){
     return stageLabel(Math.max(c.stage - 2, 1));
   }
 
-  // avança o relógio (botão de demo "passar 1 dia")
+  // avança o relógio (botão de demo "passar 1 dia") — desloca o relógio real, não o substitui
   function advanceDays(state, n){
-    state.now += n*DAY;
+    state.offset = (state.offset||0) + n*DAY;
     save(state);
   }
 
