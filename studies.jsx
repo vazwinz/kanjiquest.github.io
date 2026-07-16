@@ -166,12 +166,22 @@ function LearnStep({ g, onIntroduce, showNeuro }) {
 
 }
 
-/* ---------- REVISÃO (recuperação ativa + grade SRS) ---------- */
-function ReviewStep({ state, id, onGrade, showNeuro }) {
+/* ---------- REVISÃO (recuperação ativa + grade SRS por escolha real, não autoavaliação) ---------- */
+function ReviewStep({ state, id, pool, onGrade, showNeuro }) {
   const g = window.G(id);
   const [revealed, setRevealed] = useStateS(false);
+  const [picked, setPicked] = useStateS(null);
   const nextOk = window.SRS.nextStageLabel(state, id);
   const nextBad = window.SRS.lapseStageLabel(state, id);
+  const options = useMemoS(() => {
+    const distract = shuffleS(pool.filter((x) => x !== g.kw)).slice(0, 2);
+    return shuffleS([{ label: g.kw, ok: true }, ...distract.map((d) => ({ label: d, ok: false }))]);
+  }, [id]);
+  function choose(opt, i) {
+    if (picked !== null) return;
+    setPicked(i);
+    setTimeout(() => onGrade(opt.ok), opt.ok ? 900 : 1600);
+  }
   return (
     <div className="step">
       <NeuroTagS label="Recuperação ativa · lembrar antes de ver" show={showNeuro} />
@@ -180,20 +190,25 @@ function ReviewStep({ state, id, onGrade, showNeuro }) {
       <>
           <p className="prompt">Sem espiar: <b>significado e leitura?</b><br />Forme a resposta na cabeça primeiro.</p>
           <div className="reveal blank">resposta escondida — recupere de memória</div>
-          <div className="actions"><button className="btn btn-primary" onClick={() => setRevealed(true)}>Revelar resposta</button></div>
+          <div className="actions"><button className="btn btn-primary" onClick={() => setRevealed(true)}>Pronto, escolher</button></div>
         </> :
 
       <>
+          <p className="prompt">Qual o significado?</p>
+          <div className="options k2m">
+            {options.map((opt, i) => {
+              let cls = 'option';
+              if (picked !== null) {if (opt.ok) cls += ' correct';else if (i === picked) cls += ' wrong';else cls += ' dim';}
+              return <button key={i} className={cls} disabled={picked !== null} onClick={() => choose(opt, i)}>{opt.label}</button>;
+            })}
+          </div>
+          {picked !== null &&
           <div className="reveal">
-            <div className="big">{g.kw}</div>
-            <div className="sub">{g.story}</div>
-            <div className="rd">{g.kun !== '—' && <span className="chip"><b>kun</b>{g.kun}</span>}<span className="chip"><b>on</b>{g.on}</span></div>
-          </div>
-          <p className="prompt">Você lembrou?</p>
-          <div className="grade">
-            <button className="gbtn again" onClick={() => onGrade(false)}><div className="gt">Errei</div><div className="gi">revisar em {nextBad}</div></button>
-            <button className="gbtn good" onClick={() => onGrade(true)}><div className="gt">Lembrei</div><div className="gi">próxima em {nextOk}</div></button>
-          </div>
+              <div className="sub">{g.story}</div>
+              <div className="rd">{g.kun !== '—' && <span className="chip"><b>kun</b>{g.kun}</span>}<span className="chip"><b>on</b>{g.on}</span></div>
+              <div className="gi" style={{ marginTop: 8 }}>{options[picked].ok ? `próxima em ${nextOk}` : `revisar em ${nextBad}`}</div>
+            </div>
+          }
         </>
       }
     </div>);
@@ -323,7 +338,7 @@ function Studies({ showNeuro, newPerSession, onPoints }) {
       <LearnStep key={'l' + qi} g={window.G(item.id)} onIntroduce={onIntroduce} showNeuro={showNeuro} /> :
       <QuickCheck key={'c' + qi} id={item.id} pool={meaningPool} onResult={onCheckResult} showNeuro={showNeuro} />;
     } else {
-      body = <ReviewStep key={'r' + qi} state={state} id={item.id} onGrade={onGrade} showNeuro={showNeuro} />;
+      body = <ReviewStep key={'r' + qi} state={state} id={item.id} pool={meaningPool} onGrade={onGrade} showNeuro={showNeuro} />;
     }
   }
 
