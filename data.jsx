@@ -1087,6 +1087,23 @@ const GLYPHS = [
   { id:'離', kw:'separar · afastar', kun:'はな.れる (hanareru)', on:'リ (ri)', lvl:'N3', parts:['隹'], story:'O pássaro (隹) que se solta da armadilha e voa para longe: afastar-se.' },
   { id:'陸', kw:'terra firme', kun:'—', on:'リク (riku)', lvl:'N3', parts:['土'], story:'A elevação de terra (土) seca e firme acima das águas: o continente.' },
   { id:'粒', kw:'grão · partícula', kun:'つぶ (tsubu)', on:'リュウ (ryuu)', lvl:'N3', parts:['米','立'], story:'Cada arroz (米) que se sustenta de pé (立) sozinho: o grãozinho.' },
+
+  /* ============================================================
+     LOTE — vocabulário do RP (Hana): kanji que faltavam
+     Ordem importa: 奴 e 異 vêm antes de quem os usa (怒 e 糞).
+     ============================================================ */
+  { id:'奴', kw:'sujeito · tipo (pej.)', kun:'やつ (yatsu)', on:'ド (do)', lvl:'N1', parts:['女','又'], story:'Uma mulher (女) sob a mão (又) de outro, tratada como serva: o "tipo" desprezado, o escravo.' },
+  { id:'異', kw:'diferente · estranho', kun:'こと.なる (kotonaru)', on:'イ (i)', lvl:'N1', parts:['田','共'], story:'Todos (共) trabalhando o mesmo campo (田), menos um: o diferente, o estranho.' },
+  { id:'絶', kw:'cortar · absoluto', kun:'た.える (taeru)', on:'ゼツ (zetsu)', lvl:'N3', parts:['糸','色'], story:'O fio (糸) que perde a cor (色) e se rompe de vez: cortar — e o "sem meio-termo", o absoluto.' },
+  { id:'殴', kw:'espancar · golpear', kun:'なぐ.る (naguru)', on:'オウ (ou)', lvl:'N1', parts:['区','殳'], story:'Golpear (殳) até encurralar no cantinho (区): espancar.' },
+  { id:'褒', kw:'elogiar', kun:'ほ.める (homeru)', on:'ホウ (hou)', lvl:'N1', parts:['保','衣'], story:'Envolver alguém (保) em roupas finas (衣) por seu mérito: elogiar, louvar.' },
+  { id:'糞', kw:'merda · excremento', kun:'くそ (kuso)', on:'フン (fun)', lvl:'—', parts:['米','異'], story:'O arroz (米) que sai diferente (異) do corpo depois da digestão: o excremento.' },
+  { id:'扱', kw:'lidar · tratar', kun:'あつか.う (atsukau)', on:'—', lvl:'N1', parts:['手','及'], story:'A mão (扌) que alcança (及) e maneja o que precisa: lidar, tratar.' },
+  { id:'頑', kw:'teimoso · cabeça-dura', kun:'かたくな (katakuna)', on:'ガン (gan)', lvl:'N1', parts:['元','頁'], story:'A origem (元) fixada na cabeça (頁), sem mudar de ideia: o teimoso, o cabeça-dura.' },
+  { id:'張', kw:'esticar · armar', kun:'は.る (haru)', on:'チョウ (chou)', lvl:'N1', parts:['弓','長'], story:'O arco (弓) esticado ao máximo (長) até a corda ficar tensa: esticar — e insistir com força (頑張る).' },
+  { id:'恥', kw:'vergonha · vergonhoso', kun:'はずかしい (hazukashii)', on:'チ (chi)', lvl:'N3', parts:['耳','心'], story:'O coração (心) que esquenta e sobe até as orelhas (耳): a vergonha.' },
+  { id:'怒', kw:'raiva · ficar bravo', kun:'おこ.る (okoru)', on:'ド (do)', lvl:'N3', parts:['奴','心'], story:'O coração (心) do sujeito maltratado (奴) que finalmente explode: a raiva.' },
+  { id:'緒', kw:'cordão · início', kun:'お (o)', on:'ショ (sho)', lvl:'N3', parts:['糸','者'], story:'O fio (糸) que essa pessoa (者) puxa desde o começo: o cordão, o início.' },
 ];
 
 const PART_LABELS = {};
