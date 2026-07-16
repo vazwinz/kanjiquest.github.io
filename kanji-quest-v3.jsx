@@ -8,8 +8,14 @@ const { useState, useEffect } = React;
 const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
   "accent": "oklch(0.585 0.175 32)",
   "showNeuro": true,
-  "newPerSession": 4
+  "newPerSession": 4,
+  "kanjiFont": "mincho"
 }/*EDITMODE-END*/;
+
+const KANJI_FONTS = {
+  mincho: "'Shippori Mincho B1', serif",
+  gothic: "'Zen Kaku Gothic New', sans-serif"
+};
 
 const ACCENT_OPTIONS = [
   "oklch(0.585 0.175 32)",  // 朱 vermelhão
@@ -30,6 +36,10 @@ function App(){
     root.style.setProperty('--accent-soft', `color-mix(in srgb, ${t.accent} 14%, transparent)`);
   }, [t.accent]);
 
+  useEffect(()=>{
+    document.documentElement.style.setProperty('--kanji-font', KANJI_FONTS[t.kanjiFont] || KANJI_FONTS.mincho);
+  }, [t.kanjiFont]);
+
   const totalKanji = window.GLYPHS.length;
 
   return (
@@ -39,14 +49,18 @@ function App(){
           <div className="brand" onClick={()=>setTab('estudos')}>
             <span className="mark">道</span><span className="name">Caminho do Kanji</span>
           </div>
-          {tab==='estudos'
-            ? <div className="stats">
-                <div className="stat"><div className="num">{studyStats.points}</div><div className="lab">Pontos</div></div>
-                <div className="stat"><div className="num">{studyStats.collection}</div><div className="lab">Coleção</div></div>
-              </div>
-            : <div className="stats">
-                <div className="stat"><div className="num">{totalKanji}</div><div className="lab">No baralho</div></div>
-              </div>}
+          <div className="topbar-right">
+            {tab==='estudos'
+              ? <div className="stats">
+                  <div className="stat"><div className="num">{studyStats.points}</div><div className="lab">Pontos</div></div>
+                  <div className="stat"><div className="num">{studyStats.collection}</div><div className="lab">Coleção</div></div>
+                </div>
+              : <div className="stats">
+                  <div className="stat"><div className="num">{totalKanji}</div><div className="lab">No baralho</div></div>
+                </div>}
+            <button className="gear-btn" aria-label="Configurações" title="Configurações"
+                    onClick={()=>window.dispatchEvent(new CustomEvent('tweaks:toggle'))}>⚙</button>
+          </div>
         </div>
 
         <div className="tabbar">
@@ -80,6 +94,7 @@ function App(){
       <TweaksPanel>
         <TweakSection label="Aparência" />
         <TweakColor label="Cor de acento" value={t.accent} options={ACCENT_OPTIONS} onChange={v=>setTweak('accent', v)} />
+        <TweakToggle label="Fonte tipo letreiro (gothic)" value={t.kanjiFont==='gothic'} onChange={v=>setTweak('kanjiFont', v?'gothic':'mincho')} />
         <TweakSection label="Didática" />
         <TweakToggle label="Dicas de neurociência" value={t.showNeuro} onChange={v=>setTweak('showNeuro', v)} />
         <TweakSlider label="Kanji novos por sessão" min={2} max={8} step={1} value={t.newPerSession} onChange={v=>setTweak('newPerSession', v)} />

@@ -123,10 +123,14 @@ function Dashboard({ state, onStudy, onAdvanceDay, onReset, newPerSession, focus
         <div className="gridcells">
           {focusGlyphs.map((g) => {
             const info = cellInfo(g);
-            const cls = 'cell' + (info.locked ? ' locked' : '') + (window.isAtom(g) && !info.locked ? ' atom' : '');
+            const isSupport = focus !== 'all' && g.lvl !== focus;
+            const lvLabel = g.lvl === '—' ? 'peça' : g.lvl;
+            const cls = 'cell' + (info.locked ? ' locked' : '') + (window.isAtom(g) && !info.locked ? ' atom' : '') + (isSupport && !info.locked ? ' support' : '');
+            const title = info.locked ? 'bloqueado' : isSupport ? `${g.kw} · peça de apoio (${lvLabel})` : g.kw;
             return (
-              <div className={cls} key={g.id} title={info.locked ? 'bloqueado' : g.kw}>
+              <div className={cls} key={g.id} title={title}>
                 {info.locked ? '·' : g.id}
+                {isSupport && !info.locked && <span className="lvbadge">{lvLabel}</span>}
                 {info.pip && <span className={'pip ' + info.pip}></span>}
               </div>);
 

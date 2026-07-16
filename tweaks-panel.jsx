@@ -232,9 +232,16 @@ function TweaksPanel({ title = 'Tweaks', children }) {
       if (t === '__activate_edit_mode') setOpen(true);
       else if (t === '__deactivate_edit_mode') setOpen(false);
     };
+    // Ponte pro app standalone (sem host de edição por trás): um botão de
+    // engrenagem na própria página dispara este evento pra abrir/fechar o painel.
+    const onToggleEvt = () => setOpen((o) => !o);
     window.addEventListener('message', onMsg);
+    window.addEventListener('tweaks:toggle', onToggleEvt);
     window.parent.postMessage({ type: '__edit_mode_available' }, '*');
-    return () => window.removeEventListener('message', onMsg);
+    return () => {
+      window.removeEventListener('message', onMsg);
+      window.removeEventListener('tweaks:toggle', onToggleEvt);
+    };
   }, []);
 
   const dismiss = () => {
