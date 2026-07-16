@@ -1,4 +1,5 @@
 # kanjiquest.github.io
-Kanji training
 
-Made with Claude Pro
+Treino de Kanjis!
+
+feito com Claude Pro
