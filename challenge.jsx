@@ -56,7 +56,7 @@ function ChallengeConfig({ onStart }){
   const [scope, setScope] = useStateC(learned.length>=4 ? 'learned' : 'all');
   const [len, setLen] = useStateC(12);
   const [lightning, setLightning] = useStateC(false);
-  const [sound, setSound] = useStateC(true);
+  const [sound, setSound] = useStateC(()=> window.Sfx ? window.Sfx.on : true);
   const [mode, setMode] = useStateC('meaning');
 
   function poolFor(sc, m){
@@ -209,10 +209,8 @@ function ChallengeGame({ cfg, onEnd }){
     advTimer.current = setTimeout(next, ok?900:1500);
   }
   function next(){
-    if(qi+1 >= queue.length){
-      const total=queue.length, acc=Math.round(100*(correct+ (picked!==null&&options[picked]?.ok?0:0))/total);
-      finish();
-    } else { setQi(qi+1); }
+    if(qi+1 >= queue.length){ finish(); }
+    else { setQi(qi+1); }
   }
   function finish(){
     const total = queue.length;

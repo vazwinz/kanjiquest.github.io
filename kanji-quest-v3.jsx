@@ -9,7 +9,8 @@ const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
   "accent": "oklch(0.585 0.175 32)",
   "showNeuro": true,
   "newPerSession": 4,
-  "kanjiFont": "mincho"
+  "kanjiFont": "mincho",
+  "soundOn": true
 }/*EDITMODE-END*/;
 
 const KANJI_FONTS = {
@@ -39,6 +40,10 @@ function App(){
   useEffect(()=>{
     document.documentElement.style.setProperty('--kanji-font', KANJI_FONTS[t.kanjiFont] || KANJI_FONTS.mincho);
   }, [t.kanjiFont]);
+
+  useEffect(()=>{
+    if (window.Sfx) window.Sfx.on = t.soundOn;
+  }, [t.soundOn]);
 
   const totalKanji = window.GLYPHS.length;
 
@@ -95,6 +100,7 @@ function App(){
         <TweakSection label="Aparência" />
         <TweakColor label="Cor de acento" value={t.accent} options={ACCENT_OPTIONS} onChange={v=>setTweak('accent', v)} />
         <TweakToggle label="Fonte tipo letreiro (gothic)" value={t.kanjiFont==='gothic'} onChange={v=>setTweak('kanjiFont', v?'gothic':'mincho')} />
+        <TweakToggle label="Som" value={t.soundOn} onChange={v=>setTweak('soundOn', v)} />
         <TweakSection label="Didática" />
         <TweakToggle label="Dicas de neurociência" value={t.showNeuro} onChange={v=>setTweak('showNeuro', v)} />
         <TweakSlider label="Kanji novos por sessão" min={2} max={8} step={1} value={t.newPerSession} onChange={v=>setTweak('newPerSession', v)} />
