@@ -48,6 +48,9 @@ function Detail({ g, learned, onPick, onClose }){
             <div className="bs-tags">
               <span className="bs-tag lv">{g.lvl==='—'?'peça-base':g.lvl}</span>
               {g.parts.length===0 ? <span className="bs-tag">átomo</span> : <span className="bs-tag">{g.parts.length} peças</span>}
+              {window.CLASS_LABELS && g.cls && g.cls.split(' · ').map((c,i)=>(
+                <span className="bs-tag cls" key={i}>{window.CLASS_LABELS[c] || c}</span>
+              ))}
               {learned.has(g.id) && <span className="bs-tag ok">✓ aprendido</span>}
             </div>
           </div>
