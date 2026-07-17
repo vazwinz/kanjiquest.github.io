@@ -36,7 +36,7 @@ function NeuroTagS({ label, show }) {
 }
 
 /* ---------- DASHBOARD ---------- */
-function Dashboard({ state, onStudy, onAdvanceDay, onReset, newPerSession, focus, onFocus }) {
+function Dashboard({ state, onStudy, onAdvanceDay, onFixClock, onReset, newPerSession, focus, onFocus }) {
   const focusS = window.SRS.focusSet(focus);
   const focusGlyphs = focusS ? window.GLYPHS.filter((g) => focusS.has(g.id)) : window.GLYPHS;
   const due = window.SRS.dueList(state, focusS);
@@ -142,6 +142,10 @@ function Dashboard({ state, onStudy, onAdvanceDay, onReset, newPerSession, focus
         <span><span className="note">Relógio da demo:</span> <span className="day">Dia {dayNum}</span></span>
         <span style={{ display: 'flex', gap: 8 }}>
           <button className="mini" onClick={onAdvanceDay}>⏩ Avançar 1 dia</button>
+          {state.offset > 0 &&
+          <button className="mini" onClick={onFixClock} title="Zera só o deslocamento do botão de demo, sem apagar sua coleção">
+            🔧 Corrigir relógio (+{Math.round(state.offset / window.SRS.DAY)}d)
+          </button>}
           <button className="mini" onClick={onReset}>↺ Zerar</button>
         </span>
       </div>
@@ -338,11 +342,12 @@ function Studies({ showNeuro, newPerSession, onPoints }) {
     persist(state);nextItem();
   }
   function advanceDay() {window.SRS.advanceDays(state, 1);persist(state);}
+  function fixClock() {window.SRS.clearOffset(state);persist(state);}
   function reset() {const s = window.SRS.blank();s.born = s.now;persist(s);setScreen('dash');setPoints(0);setStreak(0);}
 
   let body;
   if (screen === 'dash') {
-    body = <Dashboard state={state} onStudy={startSession} onAdvanceDay={advanceDay} onReset={reset} newPerSession={newPerSession} focus={focus} onFocus={setFocus} />;
+    body = <Dashboard state={state} onStudy={startSession} onAdvanceDay={advanceDay} onFixClock={fixClock} onReset={reset} newPerSession={newPerSession} focus={focus} onFocus={setFocus} />;
   } else if (screen === 'summary') {
     body = <Summary state={state} result={result.current} onHome={() => setScreen('dash')} />;
   } else {

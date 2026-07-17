@@ -123,6 +123,14 @@ const SRS = (function(){
     save(state);
   }
 
+  // zera só o deslocamento do botão de demo, SEM apagar a coleção —
+  // corrige quem mexeu no "Avançar 1 dia" sem perceber que isso empurra
+  // o relógio pra sempre, e só volta ao normal zerando tudo.
+  function clearOffset(state){
+    state.offset = 0;
+    save(state);
+  }
+
   // monta a fila de uma sessão: revisões vencidas + N novos, INTERCALADO
   function buildSession(state, newLimit, focus){
     const due = dueList(state, focus);
@@ -157,7 +165,7 @@ const SRS = (function(){
     card, isLearned, unlockable, dueList, dueCount, learnedCount,
     focusSet, learnedIn,
     introduce, review, nextStageLabel, lapseStageLabel,
-    advanceDays, buildSession, maturity, clock,
+    advanceDays, clearOffset, buildSession, maturity, clock,
   };
 })();
 
