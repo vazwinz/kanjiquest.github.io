@@ -162,7 +162,9 @@ function LearnStep({ g, onIntroduce, showNeuro }) {
       <div className="grid-wrap"><div className="genko"><span className="glyph">{g.id}</span></div></div>
       <div className="tagrow">
         <span className={'tag' + (atom ? ' tag-radical' : ' tag-kanji')}>{atom ? 'Radical' : 'Kanji'}</span>
-        {window.CLASS_LABELS && g.cls && <span className="tag tag-class">{window.CLASS_LABELS[g.cls]}</span>}
+        {window.CLASS_LABELS && g.cls && g.cls.split(' · ').map((c, i) =>
+          <span className="tag tag-class" key={i}>{window.CLASS_LABELS[c] || c}</span>
+        )}
       </div>
       <div className="meaning">{g.kw}</div>
       <ReadingsS g={g} />

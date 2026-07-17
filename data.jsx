@@ -14,6 +14,10 @@
    kun) — não é chute. Valores: verbo, adj-i, adj-na, substantivo,
    numeral, pronome, adverbio, conjuncao, interjeicao, raiz (só
    aparece em compostos, não é palavra sozinho).
+   Quando o kanji tem 2 leituras kun com significados de verdade
+   diferentes (ex: 足 = pé/あし E bastar/たりる), kun e cls levam os
+   dois valores separados por " · ", na mesma ordem — cada leitura
+   casa com a classe do mesmo índice.
    ============================================================ */
 const GLYPHS = [
   /* ---------- pictogramas atômicos (peças-base) ---------- */
@@ -43,8 +47,8 @@ const GLYPHS = [
     story:'Uma mão aberta com os dedos e o pulso.' },
 
   /* ---------- compostos (montados das peças acima) ---------- */
-  { id:'明', kw:'brilhante · claro', kun:'あか.るい (aka)',  on:'メイ (mei)',  lvl:'N5', cls:'adj-i', parts:['日','月'],
-    story:'O Sol e a Lua juntos no céu — tudo fica brilhante e claro.' },
+  { id:'明', kw:'brilhante · claro · amanhecer', kun:'あか.るい (aka) · あ.ける (ake)',  on:'メイ (mei)',  lvl:'N5', cls:'adj-i · verbo', parts:['日','月'],
+    story:'O Sol e a Lua juntos no céu — tudo fica brilhante e claro, como quando o dia amanhece.' },
   { id:'林', kw:'bosque',         kun:'はやし (hayashi)', on:'リン (rin)',   lvl:'N4', cls:'substantivo', parts:['木','木'],
     story:'Duas árvores lado a lado: um bosque.' },
   { id:'森', kw:'floresta',       kun:'もり (mori)',      on:'シン (shin)',  lvl:'N5', cls:'substantivo', parts:['木','木','木'],
@@ -83,7 +87,7 @@ const GLYPHS = [
   { id:'心', kw:'coração', kun:'こころ (kokoro)', on:'シン (shin)', lvl:'N5', cls:'substantivo', parts:[], story:'Um núcleo interno, como o centro das emoções.' },
   { id:'門', kw:'portão', kun:'かど (kado)', on:'モン (mon)', lvl:'N4', cls:'substantivo', parts:[], story:'Dois painéis de porta formando a entrada.' },
   { id:'立', kw:'ficar de pé', kun:'たつ (tatsu)', on:'リツ (ritsu)', lvl:'N5', cls:'verbo', parts:[], story:'Uma figura vertical parada sobre o chão.' },
-  { id:'言', kw:'falar', kun:'いう (iu)', on:'ゲン (gen)', lvl:'N5', cls:'verbo', parts:[], story:'Traços que lembram a fala saindo da boca.' },
+  { id:'言', kw:'falar · palavra', kun:'いう (iu) · こと (koto)', on:'ゲン (gen)', lvl:'N5', cls:'verbo · substantivo', parts:[], story:'Traços que lembram a fala saindo da boca — o que se fala vira palavra.' },
   { id:'主', kw:'principal', kun:'ぬし (nushi)', on:'シュ (shu)', lvl:'N3', cls:'substantivo', parts:[], story:'Um ponto forte no topo, como quem lidera.' },
   { id:'可', kw:'possível', kun:'—', on:'カ (ka)', lvl:'N4', cls:'substantivo', parts:[], story:'Algo que se encaixa e fica aceitável.' },
   { id:'也', kw:'serpente (radical)', kun:'—', on:'ヤ (ya)', lvl:'—', cls:'verbo', parts:[], story:'Um traço curvo como uma serpente enroscada. Hoje quase não aparece sozinho: serve de peça fonética (他·地·池) e vive em nomes próprios, lido や (como em 拓也, Takuya).' },
@@ -204,7 +208,7 @@ const GLYPHS = [
   { id:'行', kw:'ir · andar', kun:'いく (iku)', on:'コウ (kou)', lvl:'N5', cls:'verbo', parts:[], story:'Um cruzamento de ruas: por onde se anda e se segue em frente.' },
   { id:'来', kw:'vir', kun:'くる (kuru)', on:'ライ (rai)', lvl:'N5', cls:'verbo', parts:[], story:'Espigas maduras se aproximando da colheita: o que vem chegando.' },
   { id:'食', kw:'comer · comida', kun:'たべる (taberu)', on:'ショク (shoku)', lvl:'N5', cls:'verbo', parts:[], story:'Uma tampa sobre a tigela cheia de arroz: a comida na mesa.' },
-  { id:'足', kw:'pé · bastar', kun:'あし (ashi)', on:'ソク (soku)', lvl:'N5', cls:'substantivo', parts:[], story:'A canela e o pé pousados no chão: o pé que já basta pra andar.' },
+  { id:'足', kw:'pé · bastar', kun:'あし (ashi) · た.りる (tariru)', on:'ソク (soku)', lvl:'N5', cls:'substantivo · verbo', parts:[], story:'A canela e o pé pousados no chão: o pé que já basta pra andar.' },
   { id:'西', kw:'oeste', kun:'にし (nishi)', on:'セイ (sei)', lvl:'N5', cls:'substantivo', parts:[], story:'O sol pousando no ninho ao entardecer: o lado oeste.' },
   { id:'南', kw:'sul', kun:'みなみ (minami)', on:'ナン (nan)', lvl:'N5', cls:'substantivo', parts:[], story:'A planta crescendo virada para o lado quente: o sul.' },
   { id:'北', kw:'norte', kun:'きた (kita)', on:'ホク (hoku)', lvl:'N5', cls:'substantivo', parts:[], story:'Duas pessoas de costas, fugindo do frio: o norte.' },
