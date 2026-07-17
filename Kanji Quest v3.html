@@ -149,6 +149,12 @@
   .glyph { font-family:var(--kanji-font); font-weight: 700; font-size: 128px; line-height: 1; color: var(--ink); position: relative; z-index: 1; user-select: none; }
   .glyph.sm { font-size: 78px; }
 
+  .tagrow { display: flex; justify-content: center; gap: 6px; margin-bottom: 10px; }
+  .tag { font-size: 10px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; padding: 4px 10px; border-radius: 999px; font-family: 'Zen Kaku Gothic New', sans-serif; }
+  .tag-radical { background: var(--accent-soft); color: var(--accent); }
+  .tag-kanji { background: var(--paper-2); border: 1px solid var(--line-2); color: var(--muted); }
+  .tag-class { background: var(--paper-2); border: 1px solid var(--line-2); color: var(--muted); }
+
   .meaning { text-align: center; font-family:'Shippori Mincho B1',serif; font-size: 30px; font-weight: 700; margin-bottom: 12px; }
   .readings { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; margin-bottom: 22px; }
   .chip { font-size: 14px; color: var(--ink-soft); border: 1px solid var(--line-2); border-radius: 999px; padding: 6px 14px; background: var(--paper-2); }
@@ -496,6 +502,7 @@
 
   <script type="text/babel" src="tweaks-panel.jsx"></script>
   <script src="data.jsx"></script>
+  <script src="sfx.jsx"></script>
   <script src="kana.jsx"></script>
   <script type="text/babel" src="srs.jsx"></script>
   <script type="text/babel" src="studies.jsx"></script>

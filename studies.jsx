@@ -156,6 +156,10 @@ function LearnStep({ g, onIntroduce, showNeuro }) {
     <div className="step">
       <NeuroTagS label={atom ? 'Nova peça · imagem mental' : 'Composição · construir com o que você já sabe'} show={showNeuro} />
       <div className="grid-wrap"><div className="genko"><span className="glyph">{g.id}</span></div></div>
+      <div className="tagrow">
+        <span className={'tag' + (atom ? ' tag-radical' : ' tag-kanji')}>{atom ? 'Radical' : 'Kanji'}</span>
+        {window.CLASS_LABELS && g.cls && <span className="tag tag-class">{window.CLASS_LABELS[g.cls]}</span>}
+      </div>
       <div className="meaning">{g.kw}</div>
       <ReadingsS g={g} />
       <BreakdownS g={g} />
@@ -184,7 +188,7 @@ function ReviewStep({ state, id, pool, onGrade, showNeuro }) {
   function choose(opt, i) {
     if (picked !== null) return;
     setPicked(i);
-    setTimeout(() => onGrade(opt.ok), opt.ok ? 900 : 1600);
+    setTimeout(() => onGrade(opt.ok), opt.ok ? 1500 : 1600);
   }
   return (
     <div className="step">
@@ -318,13 +322,19 @@ function Studies({ showNeuro, newPerSession, onPoints }) {
   }
   function onCheckResult(ok) {
     result.current.answered++;
-    if (ok) {result.current.correct++;setPoints((p) => p + 10);setStreak((s) => s + 1);fireStamp();} else setStreak(0);
+    if (ok) {
+      result.current.correct++;const ns = streak + 1;setStreak(ns);setPoints((p) => p + 10);fireStamp();
+      window.Sfx.correct();if (ns >= 3 && ns % 3 === 0) window.Sfx.streak(Math.floor(ns / 3));
+    } else {setStreak(0);window.Sfx.wrong();}
     nextItem();
   }
   function onGrade(ok) {
     const id = queue[qi].id;
     window.SRS.review(state, id, ok);result.current.reviewed++;result.current.answered++;
-    if (ok) {result.current.correct++;const ns = streak + 1;setStreak(ns);setPoints((p) => p + 10 + ns * 2);fireStamp();} else setStreak(0);
+    if (ok) {
+      result.current.correct++;const ns = streak + 1;setStreak(ns);setPoints((p) => p + 10 + ns * 2);fireStamp();
+      window.Sfx.correct();if (ns >= 3 && ns % 3 === 0) window.Sfx.streak(Math.floor(ns / 3));
+    } else {setStreak(0);window.Sfx.wrong();}
     persist(state);nextItem();
   }
   function advanceDay() {window.SRS.advanceDays(state, 1);persist(state);}

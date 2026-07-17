@@ -8,29 +8,9 @@
    ============================================================ */
 const { useState: useStateC, useEffect: useEffectC, useRef: useRefC, useMemo: useMemoC, useCallback: useCallbackC } = React;
 
-/* ---------- AUDIO (Web Audio, zero deps) ---------- */
-let _AC = null;
-function acC(){ if(!_AC){ try{ _AC = new (window.AudioContext||window.webkitAudioContext)(); }catch(e){} } return _AC; }
-function tone(freq, type, dur, vol, delay){
-  const ac=acC(); if(!ac) return;
-  try{
-    const g=ac.createGain(); g.connect(ac.destination);
-    const o=ac.createOscillator(); o.connect(g); o.type=type;
-    o.frequency.setValueAtTime(freq, ac.currentTime+delay);
-    g.gain.setValueAtTime(0, ac.currentTime+delay);
-    g.gain.linearRampToValueAtTime(vol, ac.currentTime+delay+0.01);
-    g.gain.exponentialRampToValueAtTime(0.001, ac.currentTime+delay+dur);
-    o.start(ac.currentTime+delay); o.stop(ac.currentTime+delay+dur+0.02);
-  }catch(e){}
-}
-const Sfx = {
-  on:true,
-  correct(){ if(!this.on) return; tone(523,'sine',.09,.14,0); tone(659,'sine',.09,.12,.07); },
-  wrong(){   if(!this.on) return; tone(200,'sawtooth',.14,.10,0); tone(180,'sawtooth',.10,.08,.10); },
-  streak(n){ if(!this.on) return; [523,659,784,1047].slice(0,Math.min(n,4)).forEach((f,i)=>tone(f,'sine',.10,.15,i*.08)); },
-  bolt(){    if(!this.on) return; tone(440,'square',.08,.08,0); },
-  click(){   if(!this.on) return; tone(880,'sine',.04,.06,0); },
-};
+/* ---------- AUDIO ---------- */
+/* motor compartilhado com os Estudos — ver sfx.jsx */
+const Sfx = window.Sfx;
 
 /* ---------- stats store (separado do SRS) ---------- */
 const CKEY = 'kanjiquest.challenge';
@@ -271,7 +251,7 @@ function ChallengeGame({ cfg, onEnd }){
         <>
           <div className="grid-wrap">
             <div className={'genko'+(cfg.lightning?' ring':'')}>
-              {cfg.lightning && <div className={'ringspin'+(hidden?'':' run')}></div>}
+              {cfg.lightning && <div className={'ringspin'+(!hidden && picked===null?' run':'')}></div>}
               <span className={'glyph'+(hidden?' faded':'')}>{item.id}</span>
             </div>
           </div>
