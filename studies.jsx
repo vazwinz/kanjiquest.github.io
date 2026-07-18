@@ -179,7 +179,7 @@ function LearnStep({ g, onIntroduce, showNeuro }) {
       </p>
       {g.use &&
       <p className="mnemonic usebox">
-        <span className="lead">{g.use === '—' ? 'Uso real' : 'Aparece de verdade em'}</span>
+        <span className="lead">{g.use === '—' ? 'Uso real' : 'Na prática'}</span>
         <strong>{g.use === '—' ? 'Só existe dentro de outros kanji — nunca vira palavra sozinha.' : g.use}</strong>
       </p>}
       <div className="actions">
