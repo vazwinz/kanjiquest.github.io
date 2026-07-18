@@ -82,6 +82,13 @@ function Detail({ g, learned, onPick, onClose }){
           </div>
         )}
 
+        {g.use && (
+          <div className="bs-blk">
+            <div className="bl">Uso real</div>
+            <div className="bs-story">{g.use === '—' ? 'Só existe dentro de outros kanji — nunca vira palavra sozinha.' : g.use}</div>
+          </div>
+        )}
+
         {used.length>0 && (
           <div className="bs-blk">
             <div className="bl">Aparece em ({used.length})</div>

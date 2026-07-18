@@ -173,6 +173,11 @@ function LearnStep({ g, onIntroduce, showNeuro }) {
         <span className="lead">{atom ? 'De onde vem a forma' : 'A história que liga as peças'}</span>
         <strong>{g.story}</strong>
       </p>
+      {g.use &&
+      <p className="mnemonic usebox">
+        <span className="lead">{g.use === '—' ? 'Uso real' : 'Aparece de verdade em'}</span>
+        <strong>{g.use === '—' ? 'Só existe dentro de outros kanji — nunca vira palavra sozinha.' : g.use}</strong>
+      </p>}
       <div className="actions">
         <button className="btn btn-primary" onClick={onIntroduce}>{atom ? 'Memorizei a peça →' : 'Entendi a composição →'}</button>
       </div>
