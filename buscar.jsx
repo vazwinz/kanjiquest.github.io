@@ -63,6 +63,10 @@ function Detail({ g, learned, onPick, onClose }){
           <span className="chip phon-note" title="Essa leitura não ajuda a adivinhar o som de nenhum kanji composto que usa essa peça — é radical de sentido, não de som.">
             não prediz som de outros kanji
           </span>}
+          {g.phon === 'fonetico' &&
+          <span className="chip phon-good" title={`Essa leitura se repete em: ${g.phonUsers.split('・').join(', ')}. Vale a pena decorar.`}>
+            prediz o som de {g.phonUsers.split('・').length} kanji
+          </span>}
         </div>
 
         {parts.length>0 && (
