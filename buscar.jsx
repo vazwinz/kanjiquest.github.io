@@ -59,6 +59,10 @@ function Detail({ g, learned, onPick, onClose }){
         <div className="bs-rd">
           {g.kun && g.kun!=='—' && <span className="chip"><b>kun</b>{g.kun}</span>}
           {g.on && g.on!=='—' && <span className="chip"><b>on</b>{g.on}</span>}
+          {g.phon === 'semantico' &&
+          <span className="chip phon-note" title="Essa leitura não ajuda a adivinhar o som de nenhum kanji composto que usa essa peça — é radical de sentido, não de som.">
+            não prediz som de outros kanji
+          </span>}
         </div>
 
         {parts.length>0 && (

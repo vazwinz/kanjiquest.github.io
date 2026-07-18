@@ -28,6 +28,10 @@ function ReadingsS({ g }) {
     <div className="readings">
       {g.kun !== '—' && <span className="chip"><b>kun</b>{g.kun}</span>}
       <span className="chip"><b>on</b>{g.on}</span>
+      {g.phon === 'semantico' &&
+      <span className="chip phon-note" title="Essa leitura não ajuda a adivinhar o som de nenhum kanji composto que usa essa peça — é radical de sentido, não de som. Decorar o som aqui não rende nada, foca no significado.">
+        não prediz som de outros kanji
+      </span>}
     </div>);
 
 }

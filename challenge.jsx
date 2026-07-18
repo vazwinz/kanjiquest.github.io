@@ -66,7 +66,10 @@ function ChallengeConfig({ onStart }){
     return window.glyphsByLevel(sc);
   }
   const pool = poolFor(scope, mode);
-  const readablePool = (mode==='reading'||mode==='kana') ? pool.filter(hasReading) : pool;
+  // no modo Leitura, tira as peças cujo som é só decorativo (não prediz nada
+  // em nenhum composto) — testar isso é decoreba sem retorno prático.
+  const readablePool = mode==='reading' ? pool.filter(hasReading).filter(g=>g.phon!=='semantico')
+    : mode==='kana' ? pool.filter(hasReading) : pool;
   const canStart = readablePool.length >= 4;
   const effScope = mode==='kana' ? 'kana' : scope;
 
@@ -139,7 +142,8 @@ function ChallengeGame({ cfg, onEnd }){
   const readPool = useMemoC(()=> (mode==='kana'?window.KATAKANA:window.GLYPHS).filter(hasReading), [mode]);
   const queue = useMemoC(()=>{
     let pool = cfg.pool;
-    if(mode==='reading'||mode==='kana') pool = pool.filter(hasReading);
+    if(mode==='reading') pool = pool.filter(hasReading).filter(g=>g.phon!=='semantico');
+    else if(mode==='kana') pool = pool.filter(hasReading);
     return shuffleC(pool).slice(0, cfg.len);
   }, []);
   const [qi, setQi] = useStateC(0);
