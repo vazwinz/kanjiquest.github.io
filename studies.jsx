@@ -45,6 +45,7 @@ function NeuroTagS({ label, show }) {
 
 /* ---------- DASHBOARD ---------- */
 function Dashboard({ state, onStudy, onAdvanceDay, onFixClock, onReset, newPerSession, focus, onFocus }) {
+  const [pickedCell, setPickedCell] = useStateS(null);
   const focusS = window.SRS.focusSet(focus);
   const focusGlyphs = focusS ? window.GLYPHS.filter((g) => focusS.has(g.id)) : window.GLYPHS;
   const due = window.SRS.dueList(state, focusS);
@@ -135,11 +136,22 @@ function Dashboard({ state, onStudy, onAdvanceDay, onFixClock, onReset, newPerSe
             const lvLabel = g.lvl === '—' ? 'peça' : g.lvl;
             const cls = 'cell' + (info.locked ? ' locked' : '') + (window.isAtom(g) && !info.locked ? ' atom' : '') + (isSupport && !info.locked ? ' support' : '');
             const title = info.locked ? 'bloqueado' : isSupport ? `${g.kw} · peça de apoio (${lvLabel})` : g.kw;
+            const open = pickedCell === g.id;
             return (
-              <div className={cls} key={g.id} title={title}>
+              <div className={cls + (open ? ' sel' : '')} key={g.id} title={title}
+                   onClick={() => !info.locked && setPickedCell(open ? null : g.id)}>
                 {info.locked ? '·' : g.id}
                 {isSupport && !info.locked && <span className="lvbadge">{lvLabel}</span>}
                 {info.pip && <span className={'pip ' + info.pip}></span>}
+                {open &&
+                <span className="kj-pop" onClick={(e) => e.stopPropagation()}>
+                  <span className="pk">{g.id}<span className="pm">{g.kw}</span></span>
+                  <span className="prd">
+                    {g.kun !== '—' ? <>kun · {g.kun}<br /></> : null}
+                    on · {g.on}
+                  </span>
+                  <span className="lk">{g.lvl === '—' ? 'peça-base' : g.lvl}</span>
+                </span>}
               </div>);
 
           })}
