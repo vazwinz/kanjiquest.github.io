@@ -198,16 +198,25 @@ function ReviewStep({ state, id, pool, onGrade, showNeuro }) {
   const g = window.G(id);
   const [revealed, setRevealed] = useStateS(false);
   const [picked, setPicked] = useStateS(null);
+  const [gaveUp, setGaveUp] = useStateS(false);
   const nextOk = window.SRS.nextStageLabel(state, id);
   const nextBad = window.SRS.lapseStageLabel(state, id);
   const options = useMemoS(() => {
     const distract = shuffleS(pool.filter((x) => x !== g.kw)).slice(0, 2);
     return shuffleS([{ label: g.kw, ok: true }, ...distract.map((d) => ({ label: d, ok: false }))]);
   }, [id]);
+  const answered = picked !== null || gaveUp;
+  const isCorrect = picked !== null && options[picked].ok;
   function choose(opt, i) {
-    if (picked !== null) return;
+    if (answered) return;
     setPicked(i);
     setTimeout(() => onGrade(opt.ok), opt.ok ? 1500 : 1600);
+  }
+  function giveUp() {
+    if (answered) return;
+    setRevealed(true);
+    setGaveUp(true);
+    setTimeout(() => onGrade(false), 1600);
   }
   return (
     <div className="step">
@@ -217,7 +226,10 @@ function ReviewStep({ state, id, pool, onGrade, showNeuro }) {
       <>
           <p className="prompt">Sem espiar: <b>significado e leitura?</b><br />Forme a resposta na cabeça primeiro.</p>
           <div className="reveal blank">resposta escondida — recupere de memória</div>
-          <div className="actions"><button className="btn btn-primary" onClick={() => setRevealed(true)}>Pronto, escolher</button></div>
+          <div className="actions">
+            <button className="btn btn-primary" onClick={() => setRevealed(true)}>Pronto, escolher</button>
+            <button className="btn btn-ghost" onClick={giveUp}>Não lembro</button>
+          </div>
         </> :
 
       <>
@@ -225,15 +237,15 @@ function ReviewStep({ state, id, pool, onGrade, showNeuro }) {
           <div className="options k2m">
             {options.map((opt, i) => {
               let cls = 'option';
-              if (picked !== null) {if (opt.ok) cls += ' correct';else if (i === picked) cls += ' wrong';else cls += ' dim';}
-              return <button key={i} className={cls} disabled={picked !== null} onClick={() => choose(opt, i)}>{opt.label}</button>;
+              if (answered) {if (opt.ok) cls += ' correct';else if (i === picked) cls += ' wrong';else cls += ' dim';}
+              return <button key={i} className={cls} disabled={answered} onClick={() => choose(opt, i)}>{opt.label}</button>;
             })}
           </div>
-          {picked !== null &&
+          {answered &&
           <div className="reveal">
               <div className="sub">{g.story}</div>
               <div className="rd">{g.kun !== '—' && <span className="chip"><b>kun</b>{g.kun}</span>}<span className="chip"><b>on</b>{g.on}</span></div>
-              <div className="gi" style={{ marginTop: 8 }}>{options[picked].ok ? `próxima em ${nextOk}` : `revisar em ${nextBad}`}</div>
+              <div className="gi" style={{ marginTop: 8 }}>{isCorrect ? `próxima em ${nextOk}` : `revisar em ${nextBad}`}</div>
             </div>
           }
         </>
