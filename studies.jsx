@@ -33,8 +33,8 @@ function ReadingsS({ g }) {
         não prediz som de outros kanji
       </span>}
       {g.phon === 'fonetico' &&
-      <span className="chip phon-good" title={`Essa leitura se repete em: ${g.phonUsers.split('・').join(', ')}. Vale a pena decorar — vai te ajudar a adivinhar o som desses kanji.`}>
-        prediz o som de {g.phonUsers.split('・').length} kanji
+      <span className="chip phon-good" title={`Esse ON se repete em: ${g.phonUsers.split('・').join(', ')}. Vale a pena decorar — vai te ajudar a adivinhar o som desses kanji.`}>
+        <b>ON</b> prevê o som de {g.phonUsers.split('・').length} kanji
       </span>}
     </div>);
 
