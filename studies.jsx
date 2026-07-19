@@ -227,8 +227,8 @@ function ReviewStep({ state, id, pool, onGrade, showNeuro }) {
           <p className="prompt">Sem espiar: <b>significado e leitura?</b><br />Forme a resposta na cabeça primeiro.</p>
           <div className="reveal blank">resposta escondida — recupere de memória</div>
           <div className="actions">
-            <button className="btn btn-primary" onClick={() => setRevealed(true)}>Pronto, escolher</button>
             <button className="btn btn-ghost" onClick={giveUp}>Não lembro</button>
+            <button className="btn btn-primary" onClick={() => setRevealed(true)}>Pronto, escolher</button>
           </div>
         </> :
 
