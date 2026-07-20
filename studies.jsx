@@ -87,7 +87,7 @@ function Dashboard({ state, onStudy, onAdvanceDay, onFixClock, onReset, newPerSe
 
   return (
     <div className="dash step">
-      <div className="hello">Bom estudo.</div>
+      <div className="hello">Testando update manual</div>
       <div className="date">Dia {dayNum} · {learned} de {totalTeachable} kanji {focus === 'all' ? 'na sua coleção' : 'no ' + focus}</div>
 
       <div className="focus-row">
