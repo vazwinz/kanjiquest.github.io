@@ -4,7 +4,7 @@
    filtrar pelos kanji aprendidos no SRS — mas guarda estatísticas
    PRÓPRIAS (kanjiquest.challenge) e NUNCA mexe no agendamento do SRS.
    Mecânicas herdadas do nosso jogo de hiragana: MC (teclas 1–4),
-   ⚡ relâmpago, streak/combos, áudio Web Audio, mapa de erros, histórico.
+   極 relâmpago, streak/combos, áudio Web Audio, mapa de erros, histórico.
    ============================================================ */
 const { useState: useStateC, useEffect: useEffectC, useRef: useRefC, useMemo: useMemoC, useCallback: useCallbackC } = React;
 
@@ -81,6 +81,18 @@ function ChallengeConfig({ onStart }){
   const [lightning, setLightning] = useStateC(false);
   const [typing, setTyping] = useStateC(false);
   const [mode, setMode] = useStateC('meaning');
+  const [zap, setZap] = useStateC(false);
+  const prevChaos = useRefC(false);
+  const isChaosConfig = lightning && typing && len==='inf';
+  useEffectC(()=>{
+    if(isChaosConfig && !prevChaos.current){
+      setZap(true);
+      const t = setTimeout(()=> setZap(false), 1400);
+      prevChaos.current = true;
+      return ()=> clearTimeout(t);
+    }
+    if(!isChaosConfig) prevChaos.current = false;
+  }, [isChaosConfig]);
 
   function poolFor(sc, m){
     if(m==='kana') return window.KATAKANA;
@@ -98,7 +110,8 @@ function ChallengeConfig({ onStart }){
   const effScope = mode==='kana' ? 'kana' : scope;
 
   return (
-    <div className="step ch-config">
+    <div className={'step ch-config'+(zap?' zap-active':'')+(isChaosConfig?' chaos-config':'')}>
+      {zap && <div className="zap-overlay"><span className="zap-bolt" style={{fontFamily:'var(--kanji-font)'}}>極</span></div>}
       <div className="ch-hero">
         <div className="ch-mark">挑戦</div>
         <h2>Challenge</h2>
@@ -139,7 +152,7 @@ function ChallengeConfig({ onStart }){
           {[8,12,20].map(n=>(
             <button key={n} className={'pill'+(len===n?' sel':'')} onClick={()=>{setLen(n);Sfx.click();}}>{n}<small>questões</small></button>
           ))}
-          <button className={'pill inf-pill'+(len==='inf'?' sel':'')} onClick={()=>{setLen('inf');Sfx.click();}}>
+          <button className={'pill inf-pill'+(len==='inf'?' sel':'')+(zap?' zap-chaos':'')+(isChaosConfig?' chaos-pill':'')} onClick={()=>{setLen('inf');Sfx.click();}}>
             INFINITE<small>recorde: {records[mode]||0}</small>
           </button>
         </div>
@@ -149,15 +162,15 @@ function ChallengeConfig({ onStart }){
       <div className="cfg-block">
         <div className="cfg-lbl">Opções</div>
         <div className="cfg-grid c2">
-          <button className={'pill'+(lightning?' sel':'')} onClick={()=>{setLightning(v=>!v);Sfx.click();}}>⚡ Relâmpago<small>kanji some em 1,5s</small></button>
-          <button className={'pill typing-pill'+(typing?' sel':'')} onClick={()=>{setTyping(v=>!v);Sfx.click();}}>✍ Digitação<small>escreva a resposta</small></button>
+          <button className={'pill'+(lightning?' sel':'')+(zap?' zap-chaos':'')+(isChaosConfig?' chaos-pill':'')} onClick={()=>{setLightning(v=>!v);Sfx.click();}}><span style={{fontFamily:'var(--kanji-font)',fontSize:'1.1em'}}>極</span> Relâmpago<small>kanji some em 0,8s</small></button>
+          <button className={'pill typing-pill'+(typing?' sel':'')+(zap?' zap-chaos':'')+(isChaosConfig?' chaos-pill':'')} onClick={()=>{setTyping(v=>!v);Sfx.click();}}>✍ Digitação<small>escreva a resposta</small></button>
         </div>
       </div>
 
       <div className="actions">
-        <button className="btn btn-accent" disabled={!canStart} style={{padding:'15px 38px',fontSize:'17px'}}
+        <button className={'btn btn-accent'+(isChaosConfig?' chaos-pill chaos-btn':'')} disabled={!canStart} style={{padding:'15px 38px',fontSize:'17px'}}
           onClick={()=>{ onStart({ scope: effScope, pool, len: len==='inf' ? 'inf' : Math.min(len, readablePool.length), lightning, typing, mode }); }}>
-          {canStart ? 'Começar challenge →' : (mode==='reading' ? 'Poucos kanji com leitura aqui' : 'Aprenda 4+ kanji primeiro')}
+          {isChaosConfig ? '極' : (canStart ? 'Começar challenge →' : (mode==='reading' ? 'Poucos kanji com leitura aqui' : 'Aprenda 4+ kanji primeiro'))}
         </button>
       </div>
     </div>
@@ -186,6 +199,7 @@ function ChallengeGame({ cfg, onEnd }){
   const [lives, setLives] = useStateC(3);
   const [hidden, setHidden] = useStateC(false);   // lightning
   const [chaosIntro, setChaosIntro] = useStateC(isChaos);
+  const [chaosAnimStart, setChaosAnimStart] = useStateC(false);
   const [burst, setBurst] = useStateC(null);
   const [typedVal, setTypedVal] = useStateC('');
   const [typingDone, setTypingDone] = useStateC(false);
@@ -242,11 +256,15 @@ function ChallengeGame({ cfg, onEnd }){
     }
   }, [qi]);
 
-  // chaos intro — dispara overlay por 1.3s na primeira rodada
+  // chaos intro — duplo rAF garante que o overlay é pintado invisible antes da animação
   useEffectC(()=>{
     if(!isChaos) return;
+    let raf1, raf2;
+    raf1 = requestAnimationFrame(()=>{
+      raf2 = requestAnimationFrame(()=> setChaosAnimStart(true));
+    });
     const t = setTimeout(()=> setChaosIntro(false), 4100);
-    return ()=> clearTimeout(t);
+    return ()=>{ cancelAnimationFrame(raf1); cancelAnimationFrame(raf2); clearTimeout(t); };
   }, []);
 
   // lightning hide + typing reset
@@ -257,17 +275,17 @@ function ChallengeGame({ cfg, onEnd }){
     clearTimeout(lightTimer.current); clearTimeout(advTimer.current); clearTimeout(failTimer.current);
     if(cfg.lightning && dir!=='m2k' && !chaosIntro){
       lightTimer.current = setTimeout(()=>{ setHidden(true); Sfx.bolt(); }, 800);
-      if(isInfinite) failTimer.current = setTimeout(()=> forceFailRef.current?.(), 2000);
+      if(typing) failTimer.current = setTimeout(()=> forceFailRef.current?.(), 2200);
     }
     return ()=>{ clearTimeout(lightTimer.current); clearTimeout(advTimer.current); clearTimeout(failTimer.current); };
   }, [qi, chaosIntro]);
 
-  // auto-foco no input de digitação a cada questão nova
+  // auto-foco no input de digitação a cada questão nova (bloqueado durante chaos intro)
   useEffectC(()=>{
-    if(!typing || !inputRef.current) return;
+    if(!typing || !inputRef.current || chaosIntro) return;
     const t = setTimeout(()=> inputRef.current?.focus(), 80);
     return ()=> clearTimeout(t);
-  }, [qi]);
+  }, [qi, chaosIntro]);
 
   function normTyping(s){ return (s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim(); }
   function checkTyping(val,g){
@@ -361,16 +379,16 @@ function ChallengeGame({ cfg, onEnd }){
   return (
     <div className={'step ch-game'+(isChaos?' chaos-active':'')+(chaosIntro?' chaos-intro-on':'')}>
       {chaosIntro && (
-        <div className="chaos-overlay">
+        <div className={'chaos-overlay'+(chaosAnimStart?' chaos-anim':'')}>
           <div className="chaos-kanji">極</div>
-          <div className="chaos-label">⚡ ✍ ∞</div>
+          <div className="chaos-label">極 ✍ ∞</div>
         </div>
       )}
       <div className="ch-pills">
         <div className="ch-pill"><span className="pv" style={{color:'var(--accent)'}}>{streak}</span> 🔥 seq</div>
         <div className="ch-pill"><span className="pv">{acc!=null?acc+'%':'—'}</span> prec</div>
         <div className="ch-pill"><span className="pv">{best}</span> 🏆 rec</div>
-        {cfg.lightning && <div className="ch-pill"><span className="pv" style={{color:'var(--accent)'}}>⚡</span> on</div>}
+        {cfg.lightning && <div className="ch-pill"><span className="pv" style={{color:'var(--accent)'}}>極</span> on</div>}
       </div>
 
       {isInfinite ? (
@@ -402,18 +420,21 @@ function ChallengeGame({ cfg, onEnd }){
 
       {typing ? (
         <div className="typing-zone">
-          <input
-            ref={inputRef}
-            className={'typing-inp'+(typingDone?(typingOk?' t-ok':' t-bad'):'')}
-            type="text"
-            inputMode="text"
-            placeholder={mode==='reading'?'hiragana…':mode==='kana'?'romaji…':'significado…'}
-            value={typedVal}
-            onChange={e=>!typingDone&&setTypedVal(e.target.value)}
-            onKeyDown={e=>{ if(e.key==='Enter'&&!typingDone&&typedVal.trim()) submitTyping(false); }}
-            disabled={typingDone}
-            autoComplete="off" autoCorrect="off" spellCheck="false"
-          />
+          <div style={{position:'relative',width:'100%'}}>
+            {cfg.lightning && !typingDone && !chaosIntro && dir!=='m2k' && <div className="ftimer" key={qi}></div>}
+            <input
+              ref={inputRef}
+              className={'typing-inp'+(typingDone?(typingOk?' t-ok':' t-bad'):'')}
+              type="text"
+              inputMode="text"
+              placeholder={mode==='reading'?'hiragana…':mode==='kana'?'romaji…':'significado…'}
+              value={typedVal}
+              onChange={e=>!typingDone&&setTypedVal(e.target.value)}
+              onKeyDown={e=>{ if(e.key==='Enter'&&!typingDone&&typedVal.trim()) submitTyping(false); }}
+              disabled={typingDone}
+              autoComplete="off" autoCorrect="off" spellCheck="false"
+            />
+          </div>
           {!typingDone ? (
             <div className="typing-btns">
               <button className="btn btn-ghost" onClick={()=>submitTyping(true)}>Não sei</button>
@@ -515,7 +536,7 @@ function ChallengeResults({ res, onAgain, onMenu }){
             {sessions.map((s,i)=>(
               <div className="hist-row" key={i}>
                 <span className="hwhen">{fmtWhen(s.when)}</span>
-                <span className="hscope">{scopeLabel(s.scope)}{s.mode==='reading'?' · 読み':''}{s.typing?' · ✍':''}{s.lightning?' ⚡':''}</span>
+                <span className="hscope">{scopeLabel(s.scope)}{s.mode==='reading'?' · 読み':''}{s.typing?' · ✍':''}{s.lightning?' 極':''}</span>
                 <span className="hacc">{s.correct}/{s.total} · {s.acc}%</span>
               </div>
             ))}
