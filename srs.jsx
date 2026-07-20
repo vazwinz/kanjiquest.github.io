@@ -85,7 +85,7 @@ const SRS = (function(){
   // introduz um kanji novo (após a tela de "aprender")
   function introduce(state, id){
     if (state.cards[id]) return;
-    state.cards[id] = { stage: 1, due: clock(state) + STAGES[1]*DAY, seen: 1, lapses: 0 };
+    state.cards[id] = { stage: 1, due: clock(state) + STAGES[1]*DAY, seen: 1, lapses: 0, learnedAt: clock(state) };
     save(state);
   }
 

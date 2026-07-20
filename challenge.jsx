@@ -37,6 +37,18 @@ function learnedGlyphs(){
   catch(e){ return []; }
 }
 
+/* os N mais recentemente aprendidos, do mais novo pro mais antigo */
+function recentGlyphs(n){
+  try{
+    const st=window.SRS.load(); if(!st||!st.cards) return [];
+    return Object.entries(st.cards)
+      .sort((a,b)=>(b[1].learnedAt||0)-(a[1].learnedAt||0))
+      .slice(0,n)
+      .map(([id])=>window.GLYPHS.find(g=>g.id===id))
+      .filter(Boolean);
+  }catch(e){ return []; }
+}
+
 /* ---------- leituras (kanji → hiragana) ---------- */
 /* converte katakana (leitura on) para hiragana */
 function kata2hira(s){ return s.replace(/[\u30a1-\u30f6]/g, c=>String.fromCharCode(c.charCodeAt(0)-0x60)); }
@@ -56,8 +68,10 @@ function hasReading(g){ return readingsOf(g).length>0; }
 /* ---------- CONFIG ---------- */
 function ChallengeConfig({ onStart }){
   const learned = learnedGlyphs();
+  const recent30 = recentGlyphs(30);
   const scopes = [
     { id:'learned', label:'Aprendidos', count: learned.length, hint:'sua coleção' },
+    { id:'recent30', label:'Últimos 30', count: recent30.length, hint:'mais recentes' },
     ...window.LEVELS.map(l=>({ id:l, label:l, count: window.glyphsByLevel(l).length, hint:'nível JLPT' })),
     { id:'all', label:'Todos', count: window.GLYPHS.length, hint:'tudo' },
   ];
@@ -71,6 +85,7 @@ function ChallengeConfig({ onStart }){
   function poolFor(sc, m){
     if(m==='kana') return window.KATAKANA;
     if(sc==='learned') return learnedGlyphs();
+    if(sc==='recent30') return recentGlyphs(30);
     if(sc==='all') return window.GLYPHS;
     return window.glyphsByLevel(sc);
   }
@@ -345,12 +360,12 @@ function ChallengeResults({ res, onAgain, onMenu }){
   const [tab, setTab] = useStateC('hm');
   const rank = res.acc===100 ? ['完','Perfeito!'] : res.acc>=80 ? ['良','Muito bem!'] : res.acc>=60 ? ['可','Bom progresso!'] : ['精','Continue treinando!'];
   const cs = getCS();
-  const scopePool = res.scope==='kana' ? window.KATAKANA : res.scope==='learned' ? learnedGlyphs() : res.scope==='all' ? window.GLYPHS : window.glyphsByLevel(res.scope);
+  const scopePool = res.scope==='kana' ? window.KATAKANA : res.scope==='recent30' ? recentGlyphs(30) : res.scope==='learned' ? learnedGlyphs() : res.scope==='all' ? window.GLYPHS : window.glyphsByLevel(res.scope);
   const sessions = getSess();
 
   function heat(g){ const s=cs[g.id]; if(!s||!s.a) return 0; const r=s.e/s.a; return r<0.15?1:r<0.4?2:r<0.7?3:4; }
   const fmtWhen = t => { const d=new Date(t); return d.toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'})+' '+d.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}); };
-  const scopeLabel = s => s==='learned'?'Aprendidos':s==='all'?'Todos':s==='kana'?'Katakana':s;
+  const scopeLabel = s => s==='learned'?'Aprendidos':s==='recent30'?'Últimos 30':s==='all'?'Todos':s==='kana'?'Katakana':s;
 
   return (
     <div className="step summary">
