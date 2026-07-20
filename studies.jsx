@@ -46,6 +46,20 @@ function NeuroTagS({ label, show }) {
 /* ---------- DASHBOARD ---------- */
 function Dashboard({ state, onStudy, onAdvanceDay, onFixClock, onReset, newPerSession, focus, onFocus }) {
   const [pickedCell, setPickedCell] = useStateS(null);
+  const [popShift, setPopShift] = useStateS(0);
+
+  // evita que o balão do popover saia da tela em kanji perto da borda esquerda/direita
+  function togglePop(e, id) {
+    if (pickedCell === id) { setPickedCell(null); return; }
+    const rect = e.currentTarget.getBoundingClientRect();
+    const margin = 10, popW = 230, half = popW / 2;
+    const center = rect.left + rect.width / 2;
+    let shift = 0;
+    if (center - half < margin) shift = margin - (center - half);
+    else if (center + half > window.innerWidth - margin) shift = (window.innerWidth - margin) - (center + half);
+    setPopShift(shift);
+    setPickedCell(id);
+  }
   const focusS = window.SRS.focusSet(focus);
   const focusGlyphs = focusS ? window.GLYPHS.filter((g) => focusS.has(g.id)) : window.GLYPHS;
   const due = window.SRS.dueList(state, focusS);
@@ -139,12 +153,13 @@ function Dashboard({ state, onStudy, onAdvanceDay, onFixClock, onReset, newPerSe
             const open = pickedCell === g.id;
             return (
               <div className={cls + (open ? ' sel' : '')} key={g.id} title={title}
-                   onClick={() => !info.locked && setPickedCell(open ? null : g.id)}>
+                   onClick={(e) => !info.locked && togglePop(e, g.id)}>
                 {info.locked ? '·' : g.id}
                 {isSupport && !info.locked && <span className="lvbadge">{lvLabel}</span>}
                 {info.pip && <span className={'pip ' + info.pip}></span>}
                 {open &&
-                <span className="kj-pop" onClick={(e) => e.stopPropagation()}>
+                <span className="kj-pop" onClick={(e) => e.stopPropagation()}
+                      style={popShift ? { transform: `translateX(calc(-50% + ${popShift}px))` } : undefined}>
                   <span className="pk">{g.id}<span className="pm">{g.kw}</span></span>
                   <span className="prd">
                     {g.kun !== '—' ? <>kun · {g.kun}<br /></> : null}

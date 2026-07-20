@@ -233,6 +233,12 @@
   .sseg .fill { display:block; height:100%; background: var(--accent); width:0; transition: width .4s cubic-bezier(.4,0,.2,1); }
   .sseg.done .fill { width:100%; } .sseg.active .fill { width:50%; }
   .scount { text-align:center; font-size:12px; color: var(--muted); margin-top:8px; letter-spacing:.04em; }
+  .ch-lives { display:flex; gap:8px; justify-content:center; margin:0 auto; }
+  .ch-lives .heart { font-size:22px; color: var(--bad); transition: opacity .25s, transform .25s; }
+  .ch-lives .heart.lost { opacity:.2; transform:scale(.8); color: var(--muted); }
+  .ch-giveup-row { text-align:center; margin-top:18px; }
+  .ch-record-flag { text-align:center; font-size:13px; font-weight:700; color: var(--muted); margin:-6px 0 18px; letter-spacing:.03em; }
+  .ch-record-flag.new { color: var(--accent); font-size:15px; }
 
   /* hanko stamp */
   .stamp-layer { position: fixed; inset: 0; display:grid; place-items:center; pointer-events:none; z-index:50; }
@@ -265,11 +271,12 @@
   .footnote { text-align:center; font-size:12px; color: var(--muted); padding: 16px 0 28px; line-height:1.6; }
   .footnote .jp { font-family:'Shippori Mincho B1',serif; }
 
-  @media (max-width: 560px){ .frame{ padding:0 18px; } .glyph{ font-size:104px; } .gridcells{ grid-template-columns: repeat(6,1fr);} }
+  @media (max-width: 560px){ .frame{ padding:0 18px; } .glyph{ font-size:104px; } .gridcells{ grid-template-columns: repeat(6,1fr);}
+    .tabbar{ gap:2px; } .tab{ padding:10px 3px; gap:4px; font-size:12.5px; } .tab .tjp{ font-size:16px; } }
 
   /* ---------- TAB BAR ---------- */
   .tabbar { display:flex; gap:4px; padding: 14px 0 0; }
-  .tab { font-family:inherit; flex:1; display:flex; align-items:center; justify-content:center; gap:9px;
+  .tab { font-family:inherit; flex:1; min-width:0; display:flex; align-items:center; justify-content:center; gap:9px;
     padding:12px 10px; font-size:15px; font-weight:700; color:var(--muted); background:transparent;
     border:none; border-bottom:2px solid var(--line); cursor:pointer; transition: color .15s; }
   .tab:hover { color: var(--ink-soft); }
@@ -287,6 +294,11 @@
   .cfg-grid { display:grid; grid-template-columns: repeat(4,1fr); gap:8px; }
   .cfg-grid.c3 { grid-template-columns: repeat(3,1fr); }
   .cfg-grid.c2 { grid-template-columns: repeat(2,1fr); }
+  .pill.inf-pill { border-color: oklch(0.55 0.20 300 / .5); background: oklch(0.55 0.20 300 / .08);
+    color: oklch(0.5 0.22 300); font-weight:800; letter-spacing:.03em; animation: infPulse 1.8s ease-in-out infinite; }
+  .pill.inf-pill small { color: oklch(0.5 0.22 300 / .8); }
+  .pill.inf-pill.sel { border-color: oklch(0.5 0.22 300); background: oklch(0.55 0.20 300 / .16); }
+  @keyframes infPulse { 0%,100%{ box-shadow: 0 0 0 0 oklch(0.55 0.20 300 / .35); } 50%{ box-shadow: 0 0 0 6px oklch(0.55 0.20 300 / 0); } }
   .pill { font-family:inherit; padding:12px 8px; border:1.5px solid var(--line-2); border-radius:11px; background:var(--paper-2);
     font-size:14px; font-weight:700; color:var(--ink-soft); cursor:pointer; transition: all .15s; text-align:center; line-height:1.2; }
   .pill small { display:block; font-size:10px; font-weight:500; opacity:.6; margin-top:3px; letter-spacing:.02em; }

@@ -21,6 +21,14 @@ function bumpCS(char, ok){ const s=loadC(); const cs=s.cs||{}; if(!cs[char]) cs[
 function pushSess(rec){ const s=loadC(); const a=s.sess||[]; a.unshift(rec); if(a.length>20)a.length=20; s.sess=a; saveC(s); }
 function getSess(){ return loadC().sess || []; }
 
+/* recorde do modo infinito: nº de acertos numa rodada, separado por modo */
+function getRecords(){ return loadC().records || {}; }
+function setRecordIfBetter(mode, score){
+  const s = loadC(); const r = s.records || {};
+  if (!r[mode] || score > r[mode]){ r[mode] = score; s.records = r; saveC(s); return true; }
+  return false;
+}
+
 function shuffleC(a){ const r=[...a]; for(let i=r.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [r[i],r[j]]=[r[j],r[i]]; } return r; }
 
 /* quais glifos estão "aprendidos" no SRS (só leitura) */
@@ -55,6 +63,7 @@ function ChallengeConfig({ onStart }){
   ];
   const [scope, setScope] = useStateC(learned.length>=4 ? 'learned' : 'all');
   const [len, setLen] = useStateC(12);
+  const records = getRecords();
   const [lightning, setLightning] = useStateC(false);
   const [sound, setSound] = useStateC(()=> window.Sfx ? window.Sfx.on : true);
   const [mode, setMode] = useStateC('meaning');
@@ -111,11 +120,15 @@ function ChallengeConfig({ onStart }){
 
       <div className="cfg-block">
         <div className="cfg-lbl">Tamanho da rodada</div>
-        <div className="cfg-grid c3">
+        <div className="cfg-grid">
           {[8,12,20].map(n=>(
             <button key={n} className={'pill'+(len===n?' sel':'')} onClick={()=>{setLen(n);Sfx.click();}}>{n}<small>questões</small></button>
           ))}
+          <button className={'pill inf-pill'+(len==='inf'?' sel':'')} onClick={()=>{setLen('inf');Sfx.click();}}>
+            INFINITE<small>recorde: {records[mode]||0}</small>
+          </button>
         </div>
+        {len==='inf' && <div className="ch-note">3 vidas — erra 3 vezes e acaba. Termina também se você desistir.</div>}
       </div>
 
       <div className="cfg-block">
@@ -128,7 +141,7 @@ function ChallengeConfig({ onStart }){
 
       <div className="actions">
         <button className="btn btn-accent" disabled={!canStart} style={{padding:'15px 38px',fontSize:'17px'}}
-          onClick={()=>{ Sfx.on=sound; onStart({ scope: effScope, pool, len: Math.min(len, readablePool.length), lightning, sound, mode }); }}>
+          onClick={()=>{ Sfx.on=sound; onStart({ scope: effScope, pool, len: len==='inf' ? 'inf' : Math.min(len, readablePool.length), lightning, sound, mode }); }}>
           {canStart ? 'Começar challenge →' : (mode==='reading' ? 'Poucos kanji com leitura aqui' : 'Aprenda 4+ kanji primeiro')}
         </button>
       </div>
@@ -139,23 +152,40 @@ function ChallengeConfig({ onStart }){
 /* ---------- GAME ---------- */
 function ChallengeGame({ cfg, onEnd }){
   const mode = cfg.mode || 'meaning';
+  const isInfinite = cfg.len === 'inf';
   const readPool = useMemoC(()=> (mode==='kana'?window.KATAKANA:window.GLYPHS).filter(hasReading), [mode]);
-  const queue = useMemoC(()=>{
+  const basePool = useMemoC(()=>{
     let pool = cfg.pool;
     if(mode==='reading') pool = pool.filter(hasReading).filter(g=>g.phon!=='semantico');
     else if(mode==='kana') pool = pool.filter(hasReading);
-    return shuffleC(pool).slice(0, cfg.len);
+    return pool;
   }, []);
+  const queueRef = useRefC(shuffleC(basePool).slice(0, isInfinite ? basePool.length : cfg.len));
   const [qi, setQi] = useStateC(0);
   const [picked, setPicked] = useStateC(null);
   const [correct, setCorrect] = useStateC(0);
   const [streak, setStreak] = useStateC(0);
   const [best, setBest] = useStateC(0);
+  const [lives, setLives] = useStateC(3);
   const [hidden, setHidden] = useStateC(false);   // lightning
   const [burst, setBurst] = useStateC(null);
   const wrongIds = useRefC([]);
+  const correctRef = useRefC(0);
   const lightTimer = useRefC(null);
   const advTimer = useRefC(null);
+
+  // modo infinito: a fila nunca acaba — vai reabastecendo o baralho embaralhado
+  // antes que o jogador alcance o fim, evitando repetir o mesmo kanji 2x seguidas
+  if (isInfinite){
+    while (queueRef.current.length - qi < 8){
+      const arr = queueRef.current;
+      const more = shuffleC(basePool);
+      const last = arr[arr.length-1];
+      if (last && more.length>1 && more[0].id===last.id){ [more[0],more[1]]=[more[1],more[0]]; }
+      queueRef.current = arr.concat(more);
+    }
+  }
+  const queue = queueRef.current;
 
   const item = queue[qi];
   // direção: leitura → k2r (kanji→hiragana); relâmpago força kanji→significado; senão alterna
@@ -202,25 +232,39 @@ function ChallengeGame({ cfg, onEnd }){
     setPicked(i);
     const ok = options[i].ok;
     bumpCS(item.id, ok);
+    let dead = false;
     if(ok){
       setCorrect(c=>c+1);
+      correctRef.current++;
       const ns = streak+1; setStreak(ns); setBest(b=>Math.max(b,ns));
       Sfx.correct();
       if(ns>=3 && ns%3===0){ Sfx.streak(Math.floor(ns/3)); setBurst(`${ns}× 連続`); setTimeout(()=>setBurst(null),1000); }
     } else {
       setStreak(0); Sfx.wrong(); wrongIds.current.push(item.id);
+      if(isInfinite){
+        const nl = lives-1;
+        setLives(nl);
+        if(nl<=0) dead = true;
+      }
     }
-    advTimer.current = setTimeout(next, ok?900:1500);
+    advTimer.current = setTimeout(()=> dead ? finish() : next(), ok?900:1500);
   }
   function next(){
     if(qi+1 >= queue.length){ finish(); }
     else { setQi(qi+1); }
   }
+  function giveUp(){
+    if(picked!==null) return;
+    clearTimeout(lightTimer.current); clearTimeout(advTimer.current);
+    finish();
+  }
   function finish(){
-    const total = queue.length;
-    const acc = Math.round(100*correct/total);
-    pushSess({ when: Date.now(), scope: cfg.scope, total, correct, acc, best, lightning: cfg.lightning, mode: cfg.mode });
-    onEnd({ total, correct, acc, best, wrong: wrongIds.current, scope: cfg.scope });
+    const total = isInfinite ? (correctRef.current + wrongIds.current.length) : queue.length;
+    const acc = total ? Math.round(100*correctRef.current/total) : 0;
+    const isNewRecord = isInfinite ? setRecordIfBetter(cfg.mode, correctRef.current) : false;
+    pushSess({ when: Date.now(), scope: cfg.scope, total, correct: correctRef.current, acc, best, lightning: cfg.lightning, mode: cfg.mode, infinite: isInfinite });
+    onEnd({ total, correct: correctRef.current, acc, best, wrong: wrongIds.current, scope: cfg.scope,
+      infinite: isInfinite, isNewRecord, record: getRecords()[cfg.mode]||0 });
   }
 
   // teclado 1-4
@@ -246,8 +290,16 @@ function ChallengeGame({ cfg, onEnd }){
         {cfg.lightning && <div className="ch-pill"><span className="pv" style={{color:'var(--accent)'}}>⚡</span> on</div>}
       </div>
 
-      <div className="ch-prog"><span style={{width:pct+'%'}}></span></div>
-      <div className="scount">{qi+1} / {queue.length}</div>
+      {isInfinite ? (
+        <div className="ch-lives" title={`${lives} vida(s)`}>
+          {[0,1,2].map(i=> <span key={i} className={'heart'+(i<lives?'':' lost')}>♥</span>)}
+        </div>
+      ) : (
+        <>
+          <div className="ch-prog"><span style={{width:pct+'%'}}></span></div>
+          <div className="scount">{qi+1} / {queue.length}</div>
+        </>
+      )}
 
       {dir!=='m2k' ? (
         <>
@@ -278,6 +330,11 @@ function ChallengeGame({ cfg, onEnd }){
         })}
       </div>
 
+      {isInfinite &&
+      <div className="ch-giveup-row">
+        <button className="mini" disabled={picked!==null} onClick={giveUp}>Desistir</button>
+      </div>}
+
       {burst && <div className="ch-burst">{burst}</div>}
     </div>
   );
@@ -300,6 +357,9 @@ function ChallengeResults({ res, onAgain, onMenu }){
       <div className="seal" style={{transform:'rotate(-6deg)'}}>{rank[0]}</div>
       <h2>{rank[1]}</h2>
       <p className="sub">Rodada de challenge — suas revisões de estudo seguem intactas.</p>
+      {res.infinite && <div className={'ch-record-flag'+(res.isNewRecord?' new':'')}>
+        {res.isNewRecord ? '🎉 Novo recorde!' : `Recorde: ${res.record} acertos`}
+      </div>}
       <div className="scorecard">
         <div className="s"><div className="n">{res.total}</div><div className="l">Questões</div></div>
         <div className="s"><div className="n" style={{color:'var(--good)'}}>{res.correct}</div><div className="l">Acertos</div></div>
