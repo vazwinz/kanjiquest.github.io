@@ -242,7 +242,7 @@ function ChallengeGame({ cfg, onEnd }){
     setHidden(false); setPicked(null);
     setTypedVal(''); setTypingDone(false); setTypingOk(false);
     clearTimeout(lightTimer.current); clearTimeout(advTimer.current);
-    if(cfg.lightning && dir!=='m2k' && !typing){
+    if(cfg.lightning && dir!=='m2k'){
       lightTimer.current = setTimeout(()=>{ setHidden(true); Sfx.bolt(); }, 800);
     }
     return ()=>{ clearTimeout(lightTimer.current); clearTimeout(advTimer.current); };
@@ -358,9 +358,9 @@ function ChallengeGame({ cfg, onEnd }){
       {dir!=='m2k' ? (
         <>
           <div className="grid-wrap">
-            <div className={'genko'+(hidden && !typing?' genko-flash':'')}>
-              {cfg.lightning && !typing && !hidden && picked===null && <div className="ltimer" key={qi}></div>}
-              <span className={'glyph'+(hidden && !typing?' faded':'')}>{item.id}</span>
+            <div className={'genko'+(hidden?' genko-flash':'')}>
+              {cfg.lightning && !hidden && !answered && <div className="ltimer" key={qi}></div>}
+              <span className={'glyph'+(hidden?' faded':'')}>{item.id}</span>
             </div>
           </div>
           <p className="prompt">{dir==='k2r'?(mode==='kana'?'Qual a leitura (romaji)?':'Qual a leitura (hiragana)?'):'Qual o significado?'}</p>
