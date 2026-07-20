@@ -195,6 +195,8 @@ function ChallengeGame({ cfg, onEnd }){
   const correctRef = useRefC(0);
   const lightTimer = useRefC(null);
   const advTimer = useRefC(null);
+  const failTimer = useRefC(null);
+  const answeredRef = useRefC(false);
 
   // modo infinito: a fila nunca acaba — vai reabastecendo o baralho embaralhado
   // antes que o jogador alcance o fim, evitando repetir o mesmo kanji 2x seguidas
@@ -242,19 +244,21 @@ function ChallengeGame({ cfg, onEnd }){
   // chaos intro — dispara overlay por 1.3s na primeira rodada
   useEffectC(()=>{
     if(!isChaos) return;
-    const t = setTimeout(()=> setChaosIntro(false), 1300);
+    const t = setTimeout(()=> setChaosIntro(false), 4100);
     return ()=> clearTimeout(t);
   }, []);
 
   // lightning hide + typing reset
   useEffectC(()=>{
+    answeredRef.current = false;
     setHidden(false); setPicked(null);
     setTypedVal(''); setTypingDone(false); setTypingOk(false);
-    clearTimeout(lightTimer.current); clearTimeout(advTimer.current);
+    clearTimeout(lightTimer.current); clearTimeout(advTimer.current); clearTimeout(failTimer.current);
     if(cfg.lightning && dir!=='m2k' && !chaosIntro){
       lightTimer.current = setTimeout(()=>{ setHidden(true); Sfx.bolt(); }, 800);
+      if(isInfinite) failTimer.current = setTimeout(forceFail, 2000);
     }
-    return ()=>{ clearTimeout(lightTimer.current); clearTimeout(advTimer.current); };
+    return ()=>{ clearTimeout(lightTimer.current); clearTimeout(advTimer.current); clearTimeout(failTimer.current); };
   }, [qi, chaosIntro]);
 
   // auto-foco no input de digitação a cada questão nova
@@ -270,8 +274,15 @@ function ChallengeGame({ cfg, onEnd }){
     if(mode==='reading'||mode==='kana') return readingsOf(g).some(r=>normTyping(r)===n);
     return g.kw.split('·').map(k=>normTyping(k)).some(k=>k===n);
   }
+  function forceFail(){
+    if(answeredRef.current) return;
+    if(typing) submitTyping(true);
+    else { const wi=options.findIndex(o=>!o.ok); if(wi>=0) choose(wi); }
+  }
   function submitTyping(forceWrong){
     if(typingDone) return;
+    answeredRef.current = true;
+    clearTimeout(failTimer.current);
     const ok=!forceWrong && checkTyping(typedVal,item);
     setTypingDone(true); setTypingOk(ok);
     bumpCS(item.id, ok);
@@ -290,7 +301,8 @@ function ChallengeGame({ cfg, onEnd }){
 
   function choose(i){
     if(picked!==null) return;
-    clearTimeout(lightTimer.current); setHidden(false);
+    answeredRef.current = true;
+    clearTimeout(lightTimer.current); clearTimeout(failTimer.current); setHidden(false);
     setPicked(i);
     const ok = options[i].ok;
     bumpCS(item.id, ok);
