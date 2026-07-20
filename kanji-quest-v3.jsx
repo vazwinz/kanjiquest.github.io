@@ -26,7 +26,7 @@ const ACCENT_OPTIONS = [
 ];
 
 function App(){
-  const { useTweaks, TweaksPanel, TweakSection, TweakColor, TweakToggle, TweakSlider } = window;
+  const { useTweaks, TweaksPanel, TweakSection, TweakColor, TweakToggle, TweakSlider, TweakButton } = window;
   const [t, setTweak] = useTweaks(TWEAK_DEFAULTS);
   const [tab, setTab] = useState('estudos');
   const [studyStats, setStudyStats] = useState({ points:0, collection:0, inSession:false });
@@ -46,6 +46,15 @@ function App(){
   }, [t.soundOn]);
 
   const totalKanji = window.GLYPHS.length;
+
+  // força checar o service worker por uma versão nova antes de recarregar —
+  // sem isso o Chrome só confere o sw.js uma vez a cada 24h
+  function forceUpdate(){
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.getRegistration().then(reg => reg && reg.update()).catch(()=>{});
+    }
+    location.reload();
+  }
 
   return (
     <div className="app">
@@ -104,6 +113,8 @@ function App(){
         <TweakSection label="Didática" />
         <TweakToggle label="Dicas de neurociência" value={t.showNeuro} onChange={v=>setTweak('showNeuro', v)} />
         <TweakSlider label="Kanji novos por sessão" min={2} max={8} step={1} value={t.newPerSession} onChange={v=>setTweak('newPerSession', v)} />
+        <TweakSection label="Sistema" />
+        <TweakButton label="🔄 Atualizar app" onClick={forceUpdate} />
       </TweaksPanel>
     </div>
   );
