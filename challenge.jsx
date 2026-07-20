@@ -243,7 +243,7 @@ function ChallengeGame({ cfg, onEnd }){
     setTypedVal(''); setTypingDone(false); setTypingOk(false);
     clearTimeout(lightTimer.current); clearTimeout(advTimer.current);
     if(cfg.lightning && dir!=='m2k' && !typing){
-      lightTimer.current = setTimeout(()=>{ setHidden(true); Sfx.bolt(); }, 1500);
+      lightTimer.current = setTimeout(()=>{ setHidden(true); Sfx.bolt(); }, 800);
     }
     return ()=>{ clearTimeout(lightTimer.current); clearTimeout(advTimer.current); };
   }, [qi]);
@@ -358,8 +358,8 @@ function ChallengeGame({ cfg, onEnd }){
       {dir!=='m2k' ? (
         <>
           <div className="grid-wrap">
-            <div className={'genko'+(cfg.lightning?' ring':'')}>
-              {cfg.lightning && !typing && <div className={'ringspin'+(!hidden && picked===null?' run':'')}></div>}
+            <div className={'genko'+(hidden && !typing?' genko-flash':'')}>
+              {cfg.lightning && !typing && !hidden && picked===null && <div className="ltimer" key={qi}></div>}
               <span className={'glyph'+(hidden && !typing?' faded':'')}>{item.id}</span>
             </div>
           </div>
