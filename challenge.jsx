@@ -197,6 +197,7 @@ function ChallengeGame({ cfg, onEnd }){
   const advTimer = useRefC(null);
   const failTimer = useRefC(null);
   const answeredRef = useRefC(false);
+  const forceFailRef = useRefC(null);
 
   // modo infinito: a fila nunca acaba — vai reabastecendo o baralho embaralhado
   // antes que o jogador alcance o fim, evitando repetir o mesmo kanji 2x seguidas
@@ -256,7 +257,7 @@ function ChallengeGame({ cfg, onEnd }){
     clearTimeout(lightTimer.current); clearTimeout(advTimer.current); clearTimeout(failTimer.current);
     if(cfg.lightning && dir!=='m2k' && !chaosIntro){
       lightTimer.current = setTimeout(()=>{ setHidden(true); Sfx.bolt(); }, 800);
-      if(isInfinite) failTimer.current = setTimeout(forceFail, 2000);
+      if(isInfinite) failTimer.current = setTimeout(()=> forceFailRef.current?.(), 2000);
     }
     return ()=>{ clearTimeout(lightTimer.current); clearTimeout(advTimer.current); clearTimeout(failTimer.current); };
   }, [qi, chaosIntro]);
@@ -274,11 +275,12 @@ function ChallengeGame({ cfg, onEnd }){
     if(mode==='reading'||mode==='kana') return readingsOf(g).some(r=>normTyping(r)===n);
     return g.kw.split('·').map(k=>normTyping(k)).some(k=>k===n);
   }
-  function forceFail(){
+  // atualiza em todo render — evita stale closure no failTimer
+  forceFailRef.current = ()=>{
     if(answeredRef.current) return;
     if(typing) submitTyping(true);
     else { const wi=options.findIndex(o=>!o.ok); if(wi>=0) choose(wi); }
-  }
+  };
   function submitTyping(forceWrong){
     if(typingDone) return;
     answeredRef.current = true;
@@ -357,7 +359,7 @@ function ChallengeGame({ cfg, onEnd }){
   const pct = Math.round((qi/queue.length)*100);
 
   return (
-    <div className="step ch-game">
+    <div className={'step ch-game'+(isChaos?' chaos-active':'')+(chaosIntro?' chaos-intro-on':'')}>
       {chaosIntro && (
         <div className="chaos-overlay">
           <div className="chaos-kanji">極</div>
