@@ -79,7 +79,7 @@ function ChallengeConfig({ onStart }){
   const [len, setLen] = useStateC(12);
   const records = getRecords();
   const [lightning, setLightning] = useStateC(false);
-  const [sound, setSound] = useStateC(()=> window.Sfx ? window.Sfx.on : true);
+  const [typing, setTyping] = useStateC(false);
   const [mode, setMode] = useStateC('meaning');
 
   function poolFor(sc, m){
@@ -150,13 +150,13 @@ function ChallengeConfig({ onStart }){
         <div className="cfg-lbl">Opções</div>
         <div className="cfg-grid c2">
           <button className={'pill'+(lightning?' sel':'')} onClick={()=>{setLightning(v=>!v);Sfx.click();}}>⚡ Relâmpago<small>kanji some em 1,5s</small></button>
-          <button className={'pill'+(sound?' sel':'')} onClick={()=>{setSound(v=>!v);Sfx.click();}}>🔊 Sons<small>feedback sonoro</small></button>
+          <button className={'pill typing-pill'+(typing?' sel':'')} onClick={()=>{setTyping(v=>!v);Sfx.click();}}>✍ Digitação<small>escreva a resposta</small></button>
         </div>
       </div>
 
       <div className="actions">
         <button className="btn btn-accent" disabled={!canStart} style={{padding:'15px 38px',fontSize:'17px'}}
-          onClick={()=>{ Sfx.on=sound; onStart({ scope: effScope, pool, len: len==='inf' ? 'inf' : Math.min(len, readablePool.length), lightning, sound, mode }); }}>
+          onClick={()=>{ onStart({ scope: effScope, pool, len: len==='inf' ? 'inf' : Math.min(len, readablePool.length), lightning, typing, mode }); }}>
           {canStart ? 'Começar challenge →' : (mode==='reading' ? 'Poucos kanji com leitura aqui' : 'Aprenda 4+ kanji primeiro')}
         </button>
       </div>
@@ -167,6 +167,7 @@ function ChallengeConfig({ onStart }){
 /* ---------- GAME ---------- */
 function ChallengeGame({ cfg, onEnd }){
   const mode = cfg.mode || 'meaning';
+  const typing = cfg.typing || false;
   const isInfinite = cfg.len === 'inf';
   const readPool = useMemoC(()=> (mode==='kana'?window.KATAKANA:window.GLYPHS).filter(hasReading), [mode]);
   const basePool = useMemoC(()=>{
@@ -184,6 +185,10 @@ function ChallengeGame({ cfg, onEnd }){
   const [lives, setLives] = useStateC(3);
   const [hidden, setHidden] = useStateC(false);   // lightning
   const [burst, setBurst] = useStateC(null);
+  const [typedVal, setTypedVal] = useStateC('');
+  const [typingDone, setTypingDone] = useStateC(false);
+  const [typingOk, setTypingOk] = useStateC(false);
+  const inputRef = useRefC(null);
   const wrongIds = useRefC([]);
   const correctRef = useRefC(0);
   const lightTimer = useRefC(null);
@@ -204,9 +209,10 @@ function ChallengeGame({ cfg, onEnd }){
 
   const item = queue[qi];
   // direção: leitura → k2r (kanji→hiragana); relâmpago força kanji→significado; senão alterna
-  const dir = useMemoC(()=> (mode==='reading'||mode==='kana') ? 'k2r' : (cfg.lightning ? 'k2m' : (Math.random()<0.5 ? 'k2m' : 'm2k')), [qi]);
+  const dir = useMemoC(()=> (mode==='reading'||mode==='kana') ? 'k2r' : (typing || cfg.lightning) ? 'k2m' : (Math.random()<0.5 ? 'k2m' : 'm2k'), [qi]);
 
   const options = useMemoC(()=>{
+    if(typing) return [];
     if(dir==='k2r'){
       const reads = readingsOf(item);
       const ans = reads[0];
@@ -231,15 +237,47 @@ function ChallengeGame({ cfg, onEnd }){
     }
   }, [qi]);
 
-  // lightning hide
+  // lightning hide + typing reset
   useEffectC(()=>{
     setHidden(false); setPicked(null);
+    setTypedVal(''); setTypingDone(false); setTypingOk(false);
     clearTimeout(lightTimer.current); clearTimeout(advTimer.current);
-    if(cfg.lightning && dir!=='m2k'){
+    if(cfg.lightning && dir!=='m2k' && !typing){
       lightTimer.current = setTimeout(()=>{ setHidden(true); Sfx.bolt(); }, 1500);
     }
     return ()=>{ clearTimeout(lightTimer.current); clearTimeout(advTimer.current); };
   }, [qi]);
+
+  // auto-foco no input de digitação a cada questão nova
+  useEffectC(()=>{
+    if(!typing || !inputRef.current) return;
+    const t = setTimeout(()=> inputRef.current?.focus(), 80);
+    return ()=> clearTimeout(t);
+  }, [qi]);
+
+  function normTyping(s){ return (s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim(); }
+  function checkTyping(val,g){
+    const n=normTyping(val); if(!n) return false;
+    if(mode==='reading'||mode==='kana') return readingsOf(g).some(r=>normTyping(r)===n);
+    return g.kw.split('·').map(k=>normTyping(k)).some(k=>k===n);
+  }
+  function submitTyping(forceWrong){
+    if(typingDone) return;
+    const ok=!forceWrong && checkTyping(typedVal,item);
+    setTypingDone(true); setTypingOk(ok);
+    bumpCS(item.id, ok);
+    let dead=false;
+    if(ok){
+      setCorrect(c=>c+1); correctRef.current++;
+      const ns=streak+1; setStreak(ns); setBest(b=>Math.max(b,ns));
+      Sfx.correct();
+      if(ns>=3&&ns%3===0){ Sfx.streak(Math.floor(ns/3)); setBurst(`${ns}× 連続`); setTimeout(()=>setBurst(null),1000); }
+    } else {
+      setStreak(0); Sfx.wrong(); wrongIds.current.push(item.id);
+      if(isInfinite){ const nl=lives-1; setLives(nl); if(nl<=0) dead=true; }
+    }
+    advTimer.current = setTimeout(()=> dead ? finish() : next(), ok ? 1200 : 1800);
+  }
 
   function choose(i){
     if(picked!==null) return;
@@ -269,7 +307,7 @@ function ChallengeGame({ cfg, onEnd }){
     else { setQi(qi+1); }
   }
   function giveUp(){
-    if(picked!==null) return;
+    if(picked!==null || typingDone) return;
     clearTimeout(lightTimer.current); clearTimeout(advTimer.current);
     finish();
   }
@@ -277,7 +315,7 @@ function ChallengeGame({ cfg, onEnd }){
     const total = isInfinite ? (correctRef.current + wrongIds.current.length) : queue.length;
     const acc = total ? Math.round(100*correctRef.current/total) : 0;
     const isNewRecord = isInfinite ? setRecordIfBetter(cfg.mode, correctRef.current) : false;
-    pushSess({ when: Date.now(), scope: cfg.scope, total, correct: correctRef.current, acc, best, lightning: cfg.lightning, mode: cfg.mode, infinite: isInfinite });
+    pushSess({ when: Date.now(), scope: cfg.scope, total, correct: correctRef.current, acc, best, lightning: cfg.lightning, typing: cfg.typing, mode: cfg.mode, infinite: isInfinite });
     onEnd({ total, correct: correctRef.current, acc, best, wrong: wrongIds.current, scope: cfg.scope,
       infinite: isInfinite, isNewRecord, record: getRecords()[cfg.mode]||0 });
   }
@@ -285,7 +323,7 @@ function ChallengeGame({ cfg, onEnd }){
   // teclado 1-4
   useEffectC(()=>{
     function onKey(e){
-      if(picked!==null) return;
+      if(picked!==null || typing) return;
       const map={'1':0,'2':1,'3':2,'4':3};
       if(e.key in map){ e.preventDefault(); choose(map[e.key]); }
     }
@@ -293,7 +331,8 @@ function ChallengeGame({ cfg, onEnd }){
     return ()=> window.removeEventListener('keydown', onKey);
   }, [picked, qi, streak]);
 
-  const acc = (qi>0||picked!==null) ? Math.round(100*correct/Math.max(1,(qi+(picked!==null?1:0)))) : null;
+  const answered = picked!==null || typingDone;
+  const acc = (qi>0||answered) ? Math.round(100*correct/Math.max(1,(qi+(answered?1:0)))) : null;
   const pct = Math.round((qi/queue.length)*100);
 
   return (
@@ -320,8 +359,8 @@ function ChallengeGame({ cfg, onEnd }){
         <>
           <div className="grid-wrap">
             <div className={'genko'+(cfg.lightning?' ring':'')}>
-              {cfg.lightning && <div className={'ringspin'+(!hidden && picked===null?' run':'')}></div>}
-              <span className={'glyph'+(hidden?' faded':'')}>{item.id}</span>
+              {cfg.lightning && !typing && <div className={'ringspin'+(!hidden && picked===null?' run':'')}></div>}
+              <span className={'glyph'+(hidden && !typing?' faded':'')}>{item.id}</span>
             </div>
           </div>
           <p className="prompt">{dir==='k2r'?(mode==='kana'?'Qual a leitura (romaji)?':'Qual a leitura (hiragana)?'):'Qual o significado?'}</p>
@@ -332,22 +371,54 @@ function ChallengeGame({ cfg, onEnd }){
         </>
       )}
 
-      <div className={'options '+(dir==='m2k'?'m2k':'k2m')}>
-        {options.map((opt,i)=>{
-          let cls='option'+(dir==='m2k'?' k':'');
-          if(picked!==null){ if(opt.ok) cls+=' correct'; else if(i===picked) cls+=' wrong'; else cls+=' dim'; }
-          return (
-            <button key={i} className={cls} disabled={picked!==null} onClick={()=>choose(i)}>
-              {dir!=='m2k' && <span className="okey">{i+1}</span>}
-              {opt.label}
-            </button>
-          );
-        })}
-      </div>
+      {typing ? (
+        <div className="typing-zone">
+          <input
+            ref={inputRef}
+            className={'typing-inp'+(typingDone?(typingOk?' t-ok':' t-bad'):'')}
+            type="text"
+            inputMode="text"
+            placeholder={mode==='reading'?'hiragana…':mode==='kana'?'romaji…':'significado…'}
+            value={typedVal}
+            onChange={e=>!typingDone&&setTypedVal(e.target.value)}
+            onKeyDown={e=>{ if(e.key==='Enter'&&!typingDone&&typedVal.trim()) submitTyping(false); }}
+            disabled={typingDone}
+            autoComplete="off" autoCorrect="off" spellCheck="false"
+          />
+          {!typingDone ? (
+            <div className="typing-btns">
+              <button className="btn btn-ghost" onClick={()=>submitTyping(true)}>Não sei</button>
+              <button className="btn btn-primary" onClick={()=>submitTyping(false)} disabled={!typedVal.trim()}>Confirmar ↵</button>
+            </div>
+          ) : (
+            <div className="reveal">
+              <div className={'typing-reveal'+(typingOk?' t-ok':' t-bad')}>{typingOk?'✓ '+item.kw:'✗ '+item.kw}</div>
+              <div className="sub" style={{marginTop:8}}>{item.story}</div>
+              <div className="rd">
+                {item.kun!=='—'&&<span className="chip"><b>kun</b>{item.kun}</span>}
+                <span className="chip"><b>on</b>{item.on}</span>
+              </div>
+            </div>
+          )}
+        </div>
+      ) : (
+        <div className={'options '+(dir==='m2k'?'m2k':'k2m')}>
+          {options.map((opt,i)=>{
+            let cls='option'+(dir==='m2k'?' k':'');
+            if(picked!==null){ if(opt.ok) cls+=' correct'; else if(i===picked) cls+=' wrong'; else cls+=' dim'; }
+            return (
+              <button key={i} className={cls} disabled={picked!==null} onClick={()=>choose(i)}>
+                {dir!=='m2k' && <span className="okey">{i+1}</span>}
+                {opt.label}
+              </button>
+            );
+          })}
+        </div>
+      )}
 
       {isInfinite &&
       <div className="ch-giveup-row">
-        <button className="mini" disabled={picked!==null} onClick={giveUp}>Desistir</button>
+        <button className="mini" disabled={picked!==null || typingDone} onClick={giveUp}>Desistir</button>
       </div>}
 
       {burst && <div className="ch-burst">{burst}</div>}
@@ -415,7 +486,7 @@ function ChallengeResults({ res, onAgain, onMenu }){
             {sessions.map((s,i)=>(
               <div className="hist-row" key={i}>
                 <span className="hwhen">{fmtWhen(s.when)}</span>
-                <span className="hscope">{scopeLabel(s.scope)}{s.mode==='reading'?' · 読み':''}{s.lightning?' ⚡':''}</span>
+                <span className="hscope">{scopeLabel(s.scope)}{s.mode==='reading'?' · 読み':''}{s.typing?' · ✍':''}{s.lightning?' ⚡':''}</span>
                 <span className="hacc">{s.correct}/{s.total} · {s.acc}%</span>
               </div>
             ))}
@@ -435,15 +506,16 @@ function ChallengeResults({ res, onAgain, onMenu }){
 function Challenge(){
   const [screen, setScreen] = useStateC('config');
   const [cfg, setCfg] = useStateC(null);
+  const [gameKey, setGameKey] = useStateC(0);
   const [res, setRes] = useStateC(null);
 
-  function start(c){ setCfg(c); setScreen('game'); }
+  function start(c){ setCfg(c); setGameKey(k=>k+1); setScreen('game'); }
   function end(r){ setRes(r); setScreen('results'); }
 
   return (
     <div className="stage">
       {screen==='config' && <ChallengeConfig onStart={start} />}
-      {screen==='game' && <ChallengeGame key={JSON.stringify(cfg).length+''+Date.now()} cfg={cfg} onEnd={end} />}
+      {screen==='game' && <ChallengeGame key={gameKey} cfg={cfg} onEnd={end} />}
       {screen==='results' && <ChallengeResults res={res} onAgain={()=>setScreen('config')} onMenu={()=>setScreen('config')} />}
     </div>
   );

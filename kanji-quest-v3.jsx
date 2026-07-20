@@ -47,6 +47,36 @@ function App(){
 
   const totalKanji = window.GLYPHS.length;
 
+  const importRef = useRefS(null);
+
+  function exportData(){
+    const bundle={};
+    ['kanjiquest.v2','kanjiquest.challenge','kanjiquest.focus'].forEach(k=>{
+      try{ const v=localStorage.getItem(k); if(v) bundle[k]=JSON.parse(v); }catch(e){}
+    });
+    const blob=new Blob([JSON.stringify(bundle,null,2)],{type:'application/json'});
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a');
+    a.href=url; a.download=`kanjiquest-${new Date().toISOString().slice(0,10)}.json`;
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }
+
+  function importData(e){
+    const file=e.target.files[0]; if(!file) return;
+    const reader=new FileReader();
+    reader.onload=(ev)=>{
+      try{
+        const bundle=JSON.parse(ev.target.result);
+        if(!bundle['kanjiquest.v2']?.cards) return;
+        Object.entries(bundle).forEach(([k,v])=>{ try{ localStorage.setItem(k,JSON.stringify(v)); }catch(er){} });
+        location.reload();
+      }catch(er){}
+    };
+    reader.readAsText(file);
+    e.target.value='';
+  }
+
   // força checar o service worker por uma versão nova antes de recarregar —
   // sem isso o Chrome só confere o sw.js uma vez a cada 24h
   function forceUpdate(){
@@ -115,7 +145,11 @@ function App(){
         <TweakSlider label="Kanji novos por sessão" min={2} max={8} step={1} value={t.newPerSession} onChange={v=>setTweak('newPerSession', v)} />
         <TweakSection label="Sistema" />
         <TweakButton label="🔄 Atualizar app" onClick={forceUpdate} />
+        <TweakSection label="Dados" />
+        <TweakButton label="📤 Exportar coleção" onClick={exportData} secondary />
+        <TweakButton label="📥 Importar backup" onClick={()=>importRef.current.click()} secondary />
       </TweaksPanel>
+      <input ref={importRef} type="file" accept=".json" style={{display:'none'}} onChange={importData} />
     </div>
   );
 }

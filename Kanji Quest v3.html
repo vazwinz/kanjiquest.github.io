@@ -496,6 +496,26 @@
     border:1.5px solid var(--line); border-radius:10px; background:var(--paper-2); display:grid; place-items:center; cursor:pointer;
     transition: all .14s; }
   .bs-uk:hover { border-color:var(--accent); color:var(--accent); transform:translateY(-2px); }
+
+  /* typing pill (opção de digitação no challenge) */
+  .pill.typing-pill { border-color: oklch(0.60 0.16 55 / .5); background: oklch(0.60 0.16 55 / .08);
+    color: oklch(0.50 0.16 55); animation: typingPulse 2s ease-in-out infinite; }
+  .pill.typing-pill small { color: oklch(0.50 0.16 55 / .8); }
+  .pill.typing-pill.sel { border-color: oklch(0.50 0.16 55); background: oklch(0.60 0.16 55 / .16); color: oklch(0.46 0.16 55); }
+  @keyframes typingPulse { 0%,100%{ box-shadow: 0 0 0 0 oklch(0.60 0.16 55 / .4); } 50%{ box-shadow: 0 0 0 6px oklch(0.60 0.16 55 / 0); } }
+
+  /* typing mode (challenge) */
+  .typing-zone { max-width:420px; margin:0 auto; display:flex; flex-direction:column; align-items:center; gap:14px; width:100%; }
+  .typing-inp { font-family:inherit; font-size:20px; font-weight:600; width:100%; padding:17px 22px;
+    border:1.5px solid var(--line-2); border-radius:14px; background:var(--paper-2); color:var(--ink);
+    outline:none; text-align:center; transition: border-color .15s, box-shadow .15s; }
+  .typing-inp:focus { border-color:var(--accent); box-shadow:0 0 0 4px var(--accent-soft); }
+  .typing-inp.t-ok { border-color:var(--good); background:var(--good-bg); color:var(--good); }
+  .typing-inp.t-bad { border-color:var(--bad); background:var(--bad-bg); color:var(--bad); }
+  .typing-btns { display:flex; gap:10px; width:100%; }
+  .typing-btns .btn { flex:1; }
+  .typing-reveal { font-family:'Shippori Mincho B1',serif; font-size:22px; font-weight:700; color:var(--good); margin-bottom:6px; }
+  .typing-reveal.t-bad { color:var(--bad); }
 </style>
 </head>
 <body>
