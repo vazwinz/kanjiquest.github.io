@@ -169,6 +169,7 @@ function ChallengeGame({ cfg, onEnd }){
   const mode = cfg.mode || 'meaning';
   const typing = cfg.typing || false;
   const isInfinite = cfg.len === 'inf';
+  const isChaos = cfg.lightning && typing && isInfinite;
   const readPool = useMemoC(()=> (mode==='kana'?window.KATAKANA:window.GLYPHS).filter(hasReading), [mode]);
   const basePool = useMemoC(()=>{
     let pool = cfg.pool;
@@ -184,6 +185,7 @@ function ChallengeGame({ cfg, onEnd }){
   const [best, setBest] = useStateC(0);
   const [lives, setLives] = useStateC(3);
   const [hidden, setHidden] = useStateC(false);   // lightning
+  const [chaosIntro, setChaosIntro] = useStateC(isChaos);
   const [burst, setBurst] = useStateC(null);
   const [typedVal, setTypedVal] = useStateC('');
   const [typingDone, setTypingDone] = useStateC(false);
@@ -237,16 +239,23 @@ function ChallengeGame({ cfg, onEnd }){
     }
   }, [qi]);
 
+  // chaos intro — dispara overlay por 1.3s na primeira rodada
+  useEffectC(()=>{
+    if(!isChaos) return;
+    const t = setTimeout(()=> setChaosIntro(false), 1300);
+    return ()=> clearTimeout(t);
+  }, []);
+
   // lightning hide + typing reset
   useEffectC(()=>{
     setHidden(false); setPicked(null);
     setTypedVal(''); setTypingDone(false); setTypingOk(false);
     clearTimeout(lightTimer.current); clearTimeout(advTimer.current);
-    if(cfg.lightning && dir!=='m2k'){
+    if(cfg.lightning && dir!=='m2k' && !chaosIntro){
       lightTimer.current = setTimeout(()=>{ setHidden(true); Sfx.bolt(); }, 800);
     }
     return ()=>{ clearTimeout(lightTimer.current); clearTimeout(advTimer.current); };
-  }, [qi]);
+  }, [qi, chaosIntro]);
 
   // auto-foco no input de digitação a cada questão nova
   useEffectC(()=>{
@@ -337,6 +346,12 @@ function ChallengeGame({ cfg, onEnd }){
 
   return (
     <div className="step ch-game">
+      {chaosIntro && (
+        <div className="chaos-overlay">
+          <div className="chaos-kanji">極</div>
+          <div className="chaos-label">⚡ ✍ ∞</div>
+        </div>
+      )}
       <div className="ch-pills">
         <div className="ch-pill"><span className="pv" style={{color:'var(--accent)'}}>{streak}</span> 🔥 seq</div>
         <div className="ch-pill"><span className="pv">{acc!=null?acc+'%':'—'}</span> prec</div>
