@@ -188,6 +188,43 @@ function Dashboard({ state, onStudy, onAdvanceDay, onFixClock, onReset, newPerSe
 
 }
 
+/* ---------- FRASE DE EXEMPLO ---------- */
+function ExFrase({ id }) {
+  const [open, setOpen] = useStateS(false);
+  const [idx, setIdx] = useStateS(0);
+  const [showPt, setShowPt] = useStateS(false);
+  const matches = (window.SENTENCES || []).filter(s => s[1].includes(id));
+  if (!matches.length) return null;
+  const s = matches[idx % matches.length];
+  const isKj = ch => /[一-龯]/.test(ch);
+  return (
+    <div className="ex-frase">
+      <button className="ex-btn" onClick={() => { if (!open) setShowPt(false); setOpen(o => !o); }}>
+        {open ? '▴' : '例'} frase de exemplo{!open && matches.length > 1 && <span className="ex-count"> ×{matches.length}</span>}
+      </button>
+      {open && (
+        <div className="ex-card">
+          <div className="ex-jp">
+            {[...s[1]].map((ch, i) => (
+              <span key={i} className={ch === id ? 'ex-target' : isKj(ch) ? 'ex-kj' : ''}>{ch}</span>
+            ))}
+          </div>
+          <div className="ex-rom">{s[2]}</div>
+          {showPt
+            ? <div className="ex-pt">{s[3]}</div>
+            : <button className="ex-reveal" onClick={e => { e.stopPropagation(); setShowPt(true); }}>ver tradução →</button>
+          }
+          {matches.length > 1 && (
+            <button className="ex-next" onClick={e => { e.stopPropagation(); setIdx(i => (i + 1) % matches.length); setShowPt(false); }}>
+              próxima →
+            </button>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
 /* ---------- APRENDER (composição) ---------- */
 function LearnStep({ g, onIntroduce, showNeuro }) {
   const atom = window.isAtom(g);
@@ -213,6 +250,7 @@ function LearnStep({ g, onIntroduce, showNeuro }) {
         <span className="lead">{g.use === '—' ? 'Uso real' : 'Na prática'}</span>
         <strong>{g.use === '—' ? 'Só existe dentro de outros kanji — nunca vira palavra sozinha.' : g.use}</strong>
       </p>}
+      <ExFrase id={g.id} />
       <div className="actions">
         <button className="btn btn-primary" onClick={onIntroduce}>{atom ? 'Memorizei a peça →' : 'Entendi a composição →'}</button>
       </div>
@@ -272,6 +310,7 @@ function ReviewStep({ state, id, pool, onGrade, showNeuro }) {
           <div className="reveal">
               <div className="sub">{g.story}</div>
               <div className="rd">{g.kun !== '—' && <span className="chip"><b>kun</b>{g.kun}</span>}<span className="chip"><b>on</b>{g.on}</span></div>
+              <ExFrase id={g.id} />
               <div className="gi" style={{ marginTop: 8 }}>{isCorrect ? `próxima em ${nextOk}` : `revisar em ${nextBad}`}</div>
             </div>
           }

@@ -163,7 +163,7 @@ const SENTENCES = [
   ['n4','深い川を見る。','fukai kawa o miru','Vejo o rio fundo.'],
   ['n4','整理して片付ける。','seiri shite katazukeru','Organizo e arrumo tudo.'],
   ['n4','昔話を知っている。','mukashibanashi o shitte iru','Conheço os contos antigos.'],
-  ['n4','全員が集まる。','zen'in ga atsumaru','Todos se reúnem.'],
+  ['n4','全員が集まる。','zen’in ga atsumaru','Todos se reúnem.'],
   ['n4','相手を思って話す。','aite o omotte hanasu','Falo pensando no outro.'],
   ['n4','息を吸う。','iki o suu','Inspiro.'],
   ['n4','速く走る人がいる。','hayaku hashiru hito ga iru','Há uma pessoa que corre rápido.'],
@@ -345,7 +345,7 @@ const SENTENCES = [
   ['n3','球を投げる。','tama o nageru','Arremesso a bola.'],
   ['n3','人を救う。','hito o sukuu','Salvo uma pessoa.'],
   ['n3','例を見る。','rei o miru','Vejo o exemplo.'],
-  ['n3','原因を考える。','gen'in o kangaeru','Penso na causa.'],
+  ['n3','原因を考える。','gen’in o kangaeru','Penso na causa.'],
   ['n3','容姿がいい。','yōshi ga ii','Tem boa aparência.'],
   ['n3','海水浴をする。','kaisuiyoku o suru','Tomo banho de mar.'],
   ['n3','欲しい物がある。','hoshii mono ga aru','Há algo que quero.'],
@@ -857,3 +857,4 @@ function Frases(){
 }
 
 window.Frases = Frases;
+window.SENTENCES = SENTENCES;
