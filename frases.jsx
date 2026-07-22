@@ -780,6 +780,22 @@ const SENTENCES = [
   ['n2','敗れた試合も記録に残る。','yabureta shiai mo kiroku ni nokoru','Até os jogos perdidos ficam no registro.'],
   ['n2','丸い字は書き易い。','marui ji wa kakiyasui','Letras redondas são fáceis de escrever.'],
   ['n2','授業では説明を省かない。','jugyō de wa setsumei o habukanai','Na aula não corto as explicações.'],
+  /* ── lote 4 ── */
+  ['n3','妻への愛は変わらない。','tsuma e no ai wa kawaranai','O amor pela esposa não muda.'],
+  ['n3','船の旅の途中で友だちができた。','fune no tabi no tochū de tomodachi ga dekita','No meio da viagem de navio fiz amigos.'],
+  ['n3','熱がある時は、冷たい水を飲む。','netsu ga aru toki wa, tsumetai mizu o nomu','Quando tenho febre, bebo água fria.'],
+  ['n3','辞書で言葉を覚える。','jisho de kotoba o oboeru','Memorizo palavras com o dicionário.'],
+  ['n3','電車を降りて、店の前に座った。','densha o orite, mise no mae ni suwatta','Desci do trem e sentei em frente à loja.'],
+  ['n2','険しい山で道を捜す。','kewashii yama de michi o sagasu','Procuro o caminho na montanha íngreme.'],
+  ['n2','水の圧力が限界を超えた。','mizu no atsuryoku ga genkai o koeta','A pressão da água passou do limite.'],
+  ['n2','将来、大きな責任を持つ。','shōrai, ōkina sekinin o motsu','No futuro terei uma grande responsabilidade.'],
+  ['n2','諸国の文化が今も存在する。','shokoku no bunka ga ima mo sonzai suru','As culturas de vários países ainda existem.'],
+  ['n2','背中の治療を受ける。','senaka no chiryō o ukeru','Recebo tratamento nas costas.'],
+  ['n2','会社は新しい人を採用して、古い車を換えた。','kaisha wa atarashii hito o saiyō shite, furui kuruma o kaeta','A empresa contratou gente nova e trocou os carros velhos.'],
+  ['n2','貿易を拡大する。','bōeki o kakudai suru','Expandimos o comércio exterior.'],
+  ['n2','美しい服装で舞台に立つ。','utsukushii fukusō de butai ni tatsu','Subo ao palco com roupas bonitas.'],
+  ['n2','暴力は人を殺すこともある。','bōryoku wa hito o korosu koto mo aru','A violência às vezes até mata.'],
+  ['n2','一般の人にも適当な本だ。','ippan no hito ni mo tekitōna hon da','É um livro adequado até pro público geral.'],
 ];
 
 const FR_TIERS = [
