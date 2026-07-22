@@ -828,6 +828,23 @@ const SENTENCES = [
   ['n2','駐車場の門を閉める。','chūshajō no mon o shimeru','Fecho o portão do estacionamento.'],
   ['n2','家賃を払うと財布が薄くなる。','yachin o harau to saifu ga usuku naru','Pagando o aluguel, a carteira fica fina.'],
   ['n2','医者は機器を操作して心臓を見る。','isha wa kiki o sōsa shite shinzō o miru','O médico opera o aparelho e examina o coração.'],
+  /* ── lote 7 ── */
+  ['n2','窓から雲を見る。','mado kara kumo o miru','Vejo as nuvens pela janela.'],
+  ['n2','子どもが砂に足を埋めた。','kodomo ga suna ni ashi o umeta','A criança enterrou os pés na areia.'],
+  ['n2','塩を袋に詰める。','shio o fukuro ni tsumeru','Encho o saco de sal.'],
+  ['n2','服を洗って、部屋を掃除する。','fuku o aratte, heya o sōji suru','Lavo a roupa e limpo o quarto.'],
+  ['n2','肩と腕が痛い。','kata to ude ga itai','O ombro e o braço doem.'],
+  ['n2','荒れた海でも浅い所は静かだ。','areta umi demo asai tokoro wa shizuka da','Mesmo no mar bravo, a parte rasa é calma.'],
+  ['n2','賢い犬が肉を盗んだ。','kashikoi inu ga niku o nusunda','O cachorro esperto roubou a carne.'],
+  ['n2','翌日、荷物が到着した。','yokujitsu, nimotsu ga tōchaku shita','No dia seguinte a bagagem chegou.'],
+  ['n2','人と比較して悩む。','hito to hikaku shite nayamu','Sofro me comparando com os outros.'],
+  ['n2','漁の後、皆で一杯飲んだ。','ryō no ato, mina de ippai nonda','Depois da pesca, todos tomaram um copo.'],
+  ['n2','殿の壁は高い。','tono no kabe wa takai','As paredes do palácio são altas.'],
+  ['n2','純金の印で手紙に封をする。','junkin no in de tegami ni fū o suru','Selo a carta com o carimbo de ouro puro.'],
+  ['n2','荒れた庭のばらが腕を刺した。','areta niwa no bara ga ude o sashita','A rosa do jardim abandonado espetou meu braço.'],
+  ['n2','殿を尊敬する。','tono o sonkei suru','Respeito o senhor feudal.'],
+  ['n2','杯から酒が零れた。','sakazuki kara sake ga koboreta','O saquê transbordou do copo.'],
+  ['n2','柔らかい手で肩を押す。','yawarakai te de kata o osu','Aperta o ombro com mãos macias.'],
 ];
 
 const FR_TIERS = [
