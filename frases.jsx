@@ -845,6 +845,22 @@ const SENTENCES = [
   ['n2','殿を尊敬する。','tono o sonkei suru','Respeito o senhor feudal.'],
   ['n2','杯から酒が零れた。','sakazuki kara sake ga koboreta','O saquê transbordou do copo.'],
   ['n2','柔らかい手で肩を押す。','yawarakai te de kata o osu','Aperta o ombro com mãos macias.'],
+  /* ── lote 8 ── */
+  ['n2','孫は祭りで踊った。','mago wa matsuri de odotta','O neto dançou no festival.'],
+  ['n2','野菜と牛乳を買う。','yasai to gyūnyū o kau','Compro verduras e leite.'],
+  ['n2','喫茶店で紅茶を飲む。','kissaten de kōcha o nomu','Tomo chá preto na cafeteria.'],
+  ['n2','凍った川が春に溶ける。','kōtta kawa ga haru ni tokeru','O rio congelado derrete na primavera.'],
+  ['n2','山で鉱石を掘る。','yama de kōseki o horu','Escavam minério na montanha.'],
+  ['n2','郊外にごみを捨てるな。','kōgai ni gomi o suteru na','Não jogue lixo no subúrbio.'],
+  ['n2','晩に日が海に沈む。','ban ni hi ga umi ni shizumu','Ao anoitecer o sol afunda no mar.'],
+  ['n2','珍しい魚が一匹いる。','mezurashii sakana ga ippiki iru','Há um peixe raro.'],
+  ['n2','恋が終わって涙が出た。','koi ga owatte namida ga deta','O romance acabou e as lágrimas vieram.'],
+  ['n2','狭い道に古い家が三軒ある。','semai michi ni furui ie ga sangen aru','Na rua estreita há três casas velhas.'],
+  ['n2','塗った壁が乾いた。','nutta kabe ga kawaita','A parede pintada secou.'],
+  ['n2','強い風で枝が折れて、皆が叫んだ。','tsuyoi kaze de eda ga orete, mina ga sakenda','O galho quebrou com o vento forte e todos gritaram.'],
+  ['n2','寺で拝んで、お茶を頂いた。','tera de ogande, ocha o itadaita','Rezei no templo e recebi um chá.'],
+  ['n2','毒についての本を二冊読んだ。','doku ni tsuite no hon o nisatsu yonda','Li dois livros sobre venenos.'],
+  ['n2','この機械は軟らかい材料を使う。','kono kikai wa yawarakai zairyō o tsukau','Esta máquina usa materiais flexíveis.'],
 ];
 
 const FR_TIERS = [
