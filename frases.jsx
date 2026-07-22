@@ -812,6 +812,22 @@ const SENTENCES = [
   ['n2','善い計画だと承知した。','yoi keikaku da to shōchi shita','Reconheci que era um bom plano.'],
   ['n2','県庁は大きな損を出した。','kenchō wa ōkina son o dashita','O governo da província teve um grande prejuízo.'],
   ['n2','著者の新しい本が刊行された。','chosha no atarashii hon ga kankō sareta','O novo livro do autor foi publicado.'],
+  /* ── lote 6 ── */
+  ['n2','宇宙は広い。','uchū wa hiroi','O universo é vasto.'],
+  ['n2','転んで骨が痛い。','koronde hone ga itai','Caí e o osso dói.'],
+  ['n2','手で草に触る。','te de kusa ni sawaru','Toco a grama com a mão.'],
+  ['n2','花束が家に届いた。','hanataba ga ie ni todoita','O buquê chegou em casa.'],
+  ['n2','仲間に贈り物をする。','nakama ni okurimono o suru','Dou um presente aos companheiros.'],
+  ['n3','警察は犯人を探す。','keisatsu wa hannin o sagasu','A polícia procura o criminoso.'],
+  ['n2','計画を替えることに賛成した。','keikaku o kaeru koto ni sansei shita','Concordei em mudar o plano.'],
+  ['n2','会社に依頼して、人を雇った。','kaisha ni irai shite, hito o yatotta','Fiz o pedido à empresa e contratei uma pessoa.'],
+  ['n2','千円札を三枚出す。','sen-en satsu o sanmai dasu','Pago com três notas de mil ienes.'],
+  ['n2','簡単な手紙を郵便で送る。','kantanna tegami o yūbin de okuru','Envio uma carta simples pelo correio.'],
+  ['n2','この町は祭りの季節に栄える。','kono machi wa matsuri no kisetsu ni sakaeru','Esta cidade floresce na época dos festivais.'],
+  ['n2','山の奥で自然の恵みを見つけた。','yama no oku de shizen no megumi o mitsuketa','No fundo da montanha encontrei as bênçãos da natureza.'],
+  ['n2','駐車場の門を閉める。','chūshajō no mon o shimeru','Fecho o portão do estacionamento.'],
+  ['n2','家賃を払うと財布が薄くなる。','yachin o harau to saifu ga usuku naru','Pagando o aluguel, a carteira fica fina.'],
+  ['n2','医者は機器を操作して心臓を見る。','isha wa kiki o sōsa shite shinzō o miru','O médico opera o aparelho e examina o coração.'],
 ];
 
 const FR_TIERS = [
