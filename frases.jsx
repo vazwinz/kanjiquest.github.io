@@ -796,6 +796,22 @@ const SENTENCES = [
   ['n2','美しい服装で舞台に立つ。','utsukushii fukusō de butai ni tatsu','Subo ao palco com roupas bonitas.'],
   ['n2','暴力は人を殺すこともある。','bōryoku wa hito o korosu koto mo aru','A violência às vezes até mata.'],
   ['n2','一般の人にも適当な本だ。','ippan no hito ni mo tekitōna hon da','É um livro adequado até pro público geral.'],
+  /* ── lote 5 ── */
+  ['n2','努力の結果、成績が上がった。','doryoku no kekka, seiseki ga agatta','Com o esforço, as notas subiram.'],
+  ['n2','電車が停止して、会社に遅れた。','densha ga teishi shite, kaisha ni okureta','O trem parou e me atrasei pro trabalho.'],
+  ['n2','生徒たちは三月に卒業する。','seito-tachi wa sangatsu ni sotsugyō suru','Os alunos se formam em março.'],
+  ['n2','老人の年齢を聞くのは失礼だ。','rōjin no nenrei o kiku no wa shitsurei da','É indelicado perguntar a idade dos idosos.'],
+  ['n2','罪を認めて、書類に署名した。','tsumi o mitomete, shorui ni shomei shita','Admitiu o crime e assinou os papéis.'],
+  ['n2','海の底までの深さを測る。','umi no soko made no fukasa o hakaru','Meço a profundidade até o fundo do mar.'],
+  ['n2','朝、日が昇って、体を伸ばす。','asa, hi ga nobotte, karada o nobasu','De manhã o sol nasce e eu estico o corpo.'],
+  ['n2','木の家を築いて、花で囲む。','ki no ie o kizuite, hana de kakomu','Construo a casa de madeira e a cerco de flores.'],
+  ['n2','この土の層は豊かだ。','kono tsuchi no sō wa yutaka da','Esta camada de solo é fértil.'],
+  ['n2','爆発で古い建物が倒れた。','bakuhatsu de furui tatemono ga taoreta','Com a explosão, o prédio velho desabou.'],
+  ['n2','会議は延期になって、今日の仕事は終了した。','kaigi wa enki ni natte, kyō no shigoto wa shūryō shita','A reunião foi adiada e o trabalho de hoje terminou.'],
+  ['n2','司会は会の規則を説明した。','shikai wa kai no kisoku o setsumei shita','O mestre de cerimônias explicou as regras da reunião.'],
+  ['n2','善い計画だと承知した。','yoi keikaku da to shōchi shita','Reconheci que era um bom plano.'],
+  ['n2','県庁は大きな損を出した。','kenchō wa ōkina son o dashita','O governo da província teve um grande prejuízo.'],
+  ['n2','著者の新しい本が刊行された。','chosha no atarashii hon ga kankō sareta','O novo livro do autor foi publicado.'],
 ];
 
 const FR_TIERS = [
