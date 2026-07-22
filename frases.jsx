@@ -861,6 +861,24 @@ const SENTENCES = [
   ['n2','寺で拝んで、お茶を頂いた。','tera de ogande, ocha o itadaita','Rezei no templo e recebi um chá.'],
   ['n2','毒についての本を二冊読んだ。','doku ni tsuite no hon o nisatsu yonda','Li dois livros sobre venenos.'],
   ['n2','この機械は軟らかい材料を使う。','kono kikai wa yawarakai zairyō o tsukau','Esta máquina usa materiais flexíveis.'],
+  /* ── lote 9 ── */
+  ['n2','猫が部屋の隅で寝ている。','neko ga heya no sumi de nete iru','O gato dorme no canto do quarto.'],
+  ['n2','寒い朝は水を沸かして茶を飲む。','samui asa wa mizu o wakashite cha o nomu','Nas manhãs frias fervo água e tomo chá.'],
+  ['n2','髪を洗って、歯を磨く。','kami o aratte, ha o migaku','Lavo o cabelo e escovo os dentes.'],
+  ['n2','靴が泥だらけになった。','kutsu ga doro darake ni natta','Os sapatos ficaram cheios de lama.'],
+  ['n2','花が咲くように祈る。','hana ga saku yō ni inoru','Rezo pra que as flores desabrochem.'],
+  ['n2','畳の部屋で綿の服を着る。','tatami no heya de men no fuku o kiru','No quarto de tatame visto roupa de algodão.'],
+  ['n2','米の粉でお菓子を作る。','kome no kona de okashi o tsukuru','Faço doces com farinha de arroz.'],
+  ['n2','この肉は脂が多くて、味は辛い。','kono niku wa abura ga ōkute, aji wa karai','Esta carne tem muita gordura e o tempero é picante.'],
+  ['n2','蒸し暑い夜に灯を消した。','mushiatsui yoru ni hi o keshita','Na noite abafada apaguei a luz.'],
+  ['n2','あの偉い学者は天才だ。','ano erai gakusha wa tensai da','Aquele grande estudioso é um gênio.'],
+  ['n2','銅で作った塔が光る。','dō de tsukutta tō ga hikaru','A torre feita de cobre brilha.'],
+  ['n2','歌詞を書いた紙を筒に入れる。','kashi o kaita kami o tsutsu ni ireru','Ponho o papel com a letra da música no tubo.'],
+  ['n2','泥棒が窓から入った。','dorobō ga mado kara haitta','O ladrão entrou pela janela.'],
+  ['n2','寒い春でも畑を耕す。','samui haru demo hatake o tagayasu','Mesmo na primavera fria, aro o campo.'],
+  ['n2','洗濯した後、鈍い痛みが腕に残った。','sentaku shita ato, nibui itami ga ude ni nokotta','Depois de lavar roupa, uma dor surda ficou no braço.'],
+  ['n2','皮膚が弱い人は綿の服がいい。','hifu ga yowai hito wa men no fuku ga ii','Quem tem pele sensível fica bem com roupa de algodão.'],
+  ['n2','寒い風で肌が痛い。','samui kaze de hada ga itai','O vento frio machuca a pele.'],
 ];
 
 const FR_TIERS = [
