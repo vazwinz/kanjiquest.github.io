@@ -3,7 +3,7 @@
    Lê window.GLYPHS pra glosar cada kanji da frase.
    Todas as frases usam SOMENTE kanji presentes no baralho
    (validado). Kana só nas partículas/terminações.
-   tier: 'n5' · 'n4' · 'n3'
+   tier: 'n5' · 'n4' · 'n3' · 'n2'
    ============================================================ */
 const { useState: useFrState } = React;
 
@@ -733,12 +733,44 @@ const SENTENCES = [
   ['n3','安い肉を買って、家で料理を作る。','yasui niku o katte, ie de ryōri o tsukuru','Compro carne barata e cozinho em casa.'],
   ['n3','地図を見て、駅から海まで歩く。','chizu o mite, eki kara umi made aruku','Olho o mapa e caminho da estação até o mar.'],
   ['n3','王は国を強くするために働く。','ō wa kuni o tsuyoku suru tame ni hataraku','O rei trabalha para tornar o país forte.'],
+  /* ── N3 · lote 2 (kanji novos de alta frequência, 2-3 por frase) ── */
+  ['n3','昨日から雨が続いて、自宅で休んだ。','kinō kara ame ga tsuzuite, jitaku de yasunda','Desde ontem a chuva continua, então descansei em casa.'],
+  ['n3','会議に出席して、長い議論を聞いた。','kaigi ni shusseki shite, nagai giron o kiita','Participei da reunião e ouvi uma longa discussão.'],
+  ['n3','好きな番号を選んだら、当たった。','sukina bangō o erandara, atatta','Escolhi o número que eu gosto e acertei.'],
+  ['n3','母は妹を何回も店に連れて行く。','haha wa imōto o nankai mo mise ni tsurete iku','Minha mãe leva minha irmã à loja várias vezes.'],
+  ['n3','彼は説明が得意だ。','kare wa setsumei ga tokui da','Ele é bom em explicar.'],
+  ['n3','実際に見ると、色が違った。','jissai ni miru to, iro ga chigatta','Vendo de verdade, a cor era diferente.'],
+  ['n3','右側の道は危ないから、行くのを断った。','migigawa no michi wa abunai kara, iku no o kotowatta','Recusei ir porque o caminho do lado direito é perigoso.'],
+  ['n3','弟は二十歳になって、本当に大人になった。','otōto wa hatachi ni natte, hontō ni otona ni natta','Meu irmão fez vinte anos e virou adulto de verdade.'],
+  /* ── N2 ── */
+  ['n2','着物に彩りのある帯を付ける。','kimono ni irodori no aru obi o tsukeru','Ponho no quimono uma faixa colorida.'],
+  ['n2','昔、欧州の帝は強い力を持っていた。','mukashi, ōshū no mikado wa tsuyoi chikara o motte ita','Antigamente, os imperadores da Europa tinham um poder forte.'],
+  ['n2','朝、床から起きて、花の露を見た。','asa, toko kara okite, hana no tsuyu o mita','De manhã levantei da cama e vi o orvalho nas flores.'],
+  ['n2','廃れた村には人がいない。','sutareta mura ni wa hito ga inai','No vilarejo abandonado não há ninguém.'],
+  ['n2','部屋を花で飾って、御飯を作った。','heya o hana de kazatte, gohan o tsukutta','Decorei o quarto com flores e fiz a comida.'],
+  ['n2','微かな音で潮が引くのが分かる。','kasukana oto de shio ga hiku no ga wakaru','Pelo som fraquinho dá pra perceber a maré baixando.'],
+  ['n2','計画の概要を総合的に説明する。','keikaku no gaiyō o sōgōteki ni setsumei suru','Explico o resumo do plano de forma geral.'],
+  ['n2','濃い茶を飲みながら、緩やかな川を見る。','koi cha o nominagara, yuruyakana kawa o miru','Vejo o rio calmo enquanto tomo um chá forte.'],
+  ['n2','猛暑の中でも体を鍛える。','mōsho no naka demo karada o kitaeru','Mesmo no calor extremo, treino o corpo.'],
+  ['n2','紙に縦の線を引く。','kami ni tate no sen o hiku','Traço uma linha vertical no papel.'],
+  ['n2','予算を計算して、計画を縮小した。','yosan o keisan shite, keikaku o shukushō shita','Calculamos o orçamento e reduzimos o plano.'],
+  ['n2','難しい問題に鋭い意見を出す。','muzukashii mondai ni surudoi iken o dasu','Dou uma opinião afiada sobre o problema difícil.'],
+  ['n2','過去を顧みると懐かしい。','kako o kaerimiru to natsukashii','Olhar pro passado dá saudade.'],
+  ['n2','秋の田を巡ると、稲が熟れていた。','aki no ta o meguru to, ine ga urete ita','Percorrendo os campos no outono, o arroz estava maduro.'],
+  ['n2','印の付いた紙を工場で刷る。','shirushi no tsuita kami o kōjō de suru','Imprimem na fábrica o papel com a marca.'],
+  ['n2','双子は同じ革のかばんを使う。','futago wa onaji kawa no kaban o tsukau','Os gêmeos usam a mesma bolsa de couro.'],
+  ['n2','団体の旨を皆に伝える。','dantai no mune o mina ni tsutaeru','Transmito o propósito do grupo a todos.'],
+  ['n2','その案は撤回された。','sono an wa tekkai sareta','Aquela proposta foi retirada.'],
+  ['n2','先生は基本から学生を導く。','sensei wa kihon kara gakusei o michibiku','O professor guia os alunos a partir da base.'],
+  ['n2','彼は独りで絵の展示を見た。','kare wa hitori de e no tenji o mita','Ele viu a exposição de quadros sozinho.'],
+  ['n2','風の勢いが強くなる確率は高い。','kaze no ikioi ga tsuyoku naru kakuritsu wa takai','A probabilidade de o vento ficar mais forte é alta.'],
 ];
 
 const FR_TIERS = [
   ['n5','N5','kanji de base'],
   ['n4','N4','uso cotidiano'],
   ['n3','N3','expressão natural'],
+  ['n2','N2','rumo à fluência'],
 ];
 
 const normFr = s => (s||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'');
