@@ -879,6 +879,13 @@ const SENTENCES = [
   ['n2','洗濯した後、鈍い痛みが腕に残った。','sentaku shita ato, nibui itami ga ude ni nokotta','Depois de lavar roupa, uma dor surda ficou no braço.'],
   ['n2','皮膚が弱い人は綿の服がいい。','hifu ga yowai hito wa men no fuku ga ii','Quem tem pele sensível fica bem com roupa de algodão.'],
   ['n2','寒い風で肌が痛い。','samui kaze de hada ga itai','O vento frio machuca a pele.'],
+  /* ── lote 10 ── */
+  ['n2','曇りの日は涼しい。','kumori no hi wa suzushii','Dias nublados são frescos.'],
+  ['n2','戸に帽子を挟んでしまった。','to ni bōshi o hasande shimatta','Prendi o chapéu na porta sem querer.'],
+  ['n2','乾燥した風で花が枯れた。','kansō shita kaze de hana ga kareta','As flores murcharam com o vento seco.'],
+  ['n2','家畜について先生に伺った。','kachiku ni tsuite sensei ni ukagatta','Perguntei respeitosamente ao professor sobre o gado.'],
+  ['n2','憎むより肯定する方がいい。','nikumu yori kōtei suru hō ga ii','Melhor afirmar do que odiar.'],
+  ['n2','赤ん坊の手に水の滴が落ちた。','akanbō no te ni mizu no shizuku ga ochita','Uma gota de água caiu na mão do bebê.'],
 ];
 
 const FR_TIERS = [

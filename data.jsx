@@ -1440,6 +1440,21 @@ const GLYPHS = [
   { id:'塔', kw:'torre', kun:'—', on:'トウ (tō)', lvl:'N2', cls:'substantivo', phon:'fonetico', phonUsers:'合', parts:['土','艹','合'], use:'塔 (とう, tō)', story:'Terra (土) e palha (艹) unidas (合) camada a camada até o céu: a torre.' },
   { id:'沸', kw:'ferver', kun:'わ.く (waku)', on:'フツ (futsu)', lvl:'N2', cls:'verbo', phon:'semantico', parts:['水','弓'], use:'沸く (わく, waku)', story:'A água (水) borbulhando em arcos (弓) na panela: ferver.' },
   { id:'菓', kw:'doce · confeito', kun:'—', on:'カ (ka)', lvl:'N2', cls:'substantivo', phon:'fonetico', phonUsers:'果', parts:['艹','果'], use:'お菓子 (おかし, okashi)', story:'A erva (艹) doce e a fruta (果) juntas na receita: o doce, o confeito.' },
+  // ---------------------------------------------------------------
+  // LOTE #10 — última leva do N2 antigo (12 kanji)
+  // ---------------------------------------------------------------
+  { id:'帽', kw:'chapéu', kun:'—', on:'ボウ (bō)', lvl:'N2', cls:'substantivo', phon:'semantico', parts:['巾','日','目'], use:'帽子 (ぼうし, bōshi)', story:'O pano (巾) que protege do sol (日) e sombreia os olhos (目): o chapéu.' },
+  { id:'枯', kw:'murchar · secar (planta)', kun:'か.れる (kareru)', on:'コ (ko)', lvl:'N2', cls:'verbo', phon:'fonetico', phonUsers:'古', parts:['木','古'], use:'枯れる (かれる, kareru)', story:'A árvore (木) que ficou velha (古) demais: murchar, secar de vez.' },
+  { id:'涼', kw:'fresco', kun:'すず.しい (suzushii)', on:'リョウ (ryō)', lvl:'N2', cls:'adj-i', phon:'fonetico', phonUsers:'京', parts:['水','京'], use:'涼しい (すずしい, suzushii)', story:'A água (水) correndo pela capital (京) no verão: o vento fresco da tarde.' },
+  { id:'憎', kw:'odiar', kun:'にく.む (nikumu)', on:'ゾウ (zō)', lvl:'N2', cls:'verbo', phon:'fonetico', phonUsers:'曽・贈', parts:['心','曽'], use:'憎む (にくむ, nikumu)', story:'O coração (心) acumulando mágoa antiga (曽) em camadas: odiar.' },
+  { id:'肯', kw:'consentir', kun:'—', on:'コウ (kō)', lvl:'N2', cls:'substantivo', phon:'semantico', parts:['止','月'], use:'肯定 (こうてい, kōtei)', story:'Parar (止) o corpo (月) e assentir com a cabeça: consentir, dizer sim.' },
+  { id:'燥', kw:'ressecar', kun:'—', on:'ソウ (sō)', lvl:'N2', cls:'substantivo', phon:'fonetico', phonUsers:'操', parts:['火','品','木'], use:'乾燥 (かんそう, kansō)', story:'O fogo (火) sugando a umidade das peças (品) de madeira (木): ressecar.' },
+  { id:'畜', kw:'gado · criação', kun:'—', on:'チク (chiku)', lvl:'N2', cls:'substantivo', phon:'semantico', parts:['玄','田'], use:'家畜 (かちく, kachiku)', story:'Os fios escuros (玄) presos ao campo (田): o gado criado na fazenda.' },
+  { id:'坊', kw:'monge · garoto', kun:'—', on:'ボウ (bō)', lvl:'N2', cls:'substantivo', phon:'fonetico', phonUsers:'方', parts:['土','方'], use:'赤ん坊 (あかんぼう, akanbō)', story:'O terreno (土) na direção (方) do templo: a cela do monge, o menino de casa.' },
+  { id:'挟', kw:'prensar entre', kun:'はさ.む (hasamu)', on:'キョウ (kyō)', lvl:'N2', cls:'verbo', phon:'fonetico', phonUsers:'狭', parts:['手'], use:'挟む (はさむ, hasamu)', story:'A mão (手) segurando algo apertado entre dois dedos: prensar no meio.' },
+  { id:'曇', kw:'nublado', kun:'くも.る (kumoru)', on:'ドン (don)', lvl:'N2', cls:'verbo', phon:'semantico', parts:['日','雲'], use:'曇り (くもり, kumori)', story:'O sol (日) engolido pelas nuvens (雲): o céu fechado, nublado.' },
+  { id:'滴', kw:'gota · pingar', kun:'しずく (shizuku)', on:'テキ (teki)', lvl:'N2', cls:'substantivo', phon:'fonetico', phonUsers:'適', parts:['水','立','口'], use:'滴 (しずく, shizuku)', story:'A água (水) que fica de pé (立) na boca (口) da torneira antes de cair: a gota.' },
+  { id:'伺', kw:'perguntar humilde · visitar', kun:'うかが.う (ukagau)', on:'シ (shi)', lvl:'N2', cls:'verbo', phon:'fonetico', phonUsers:'司・詞', parts:['人','司'], use:'伺う (うかがう, ukagau)', story:'A pessoa (人) diante de quem administra (司), pedindo licença: perguntar com respeito.' },
 ];
 
 const PART_LABELS = {};
