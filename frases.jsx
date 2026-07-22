@@ -890,6 +890,7 @@ const SENTENCES = [
   ['n2','患者は瓶の薬を飲む。','kanja wa bin no kusuri o nomu','O paciente toma o remédio do vidro.'],
   ['n2','海に船が一隻見えて、砂に足跡が残った。','umi ni fune ga isseki miete, suna ni ashiato ga nokotta','Um navio apareceu no mar e pegadas ficaram na areia.'],
   ['n2','外国籍の友だちと缶のお茶を飲んだ。','gaikokuseki no tomodachi to kan no ocha o nonda','Tomei chá de lata com meu amigo de nacionalidade estrangeira.'],
+  ['n3','壁に絵を掛ける。','kabe ni e o kakeru','Penduro o quadro na parede.'],
 ];
 
 const FR_TIERS = [

@@ -1464,6 +1464,7 @@ const GLYPHS = [
   { id:'缶', kw:'lata', kun:'—', on:'カン (kan)', lvl:'N2', cls:'substantivo', phon:'semantico', parts:[], use:'缶 (かん, kan)', story:'O pote de boca estreita e corpo fechado: a lata que guarda e conserva.' },
   { id:'瓶', kw:'garrafa · jarro', kun:'—', on:'ビン (bin)', lvl:'N2', cls:'substantivo', phon:'semantico', parts:[], use:'瓶 (びん, bin)', story:'Duas metades de barro unidas no forno: a garrafa de pescoço fino.' },
   { id:'隻', kw:'contador de navios', kun:'—', on:'セキ (seki)', lvl:'N2', cls:'substantivo', phon:'semantico', parts:['隹','又'], use:'一隻 (いっせき, isseki)', story:'O pássaro (隹) pousado na mão (又), contado um a um: um navio, dois navios.' },
+  { id:'掛', kw:'pendurar · aplicar', kun:'か.ける (kakeru)', on:'カイ (kai)', lvl:'N3', cls:'verbo', phon:'semantico', parts:['手','土','卜'], use:'掛ける (かける, kakeru)', story:'A mão (手) fincando a estaca (卜) na terra (土) pra pendurar o que vier: dependurar, aplicar.' },
 ];
 
 const PART_LABELS = {};
