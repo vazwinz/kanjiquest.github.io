@@ -764,6 +764,22 @@ const SENTENCES = [
   ['n2','先生は基本から学生を導く。','sensei wa kihon kara gakusei o michibiku','O professor guia os alunos a partir da base.'],
   ['n2','彼は独りで絵の展示を見た。','kare wa hitori de e no tenji o mita','Ele viu a exposição de quadros sozinho.'],
   ['n2','風の勢いが強くなる確率は高い。','kaze no ikioi ga tsuyoku naru kakuritsu wa takai','A probabilidade de o vento ficar mais forte é alta.'],
+  /* ── lote 3 ── */
+  ['n3','若い歌手の声は高い。','wakai kashu no koe wa takai','A voz do cantor jovem é alta.'],
+  ['n3','満足して会社を退いた。','manzoku shite kaisha o shirizoita','Saí da empresa satisfeito.'],
+  ['n2','彼は工場で重い労働を担う。','kare wa kōjō de omoi rōdō o ninau','Ele assume o trabalho pesado na fábrica.'],
+  ['n2','楽器の準備をする。','gakki no junbi o suru','Preparo os instrumentos musicais.'],
+  ['n2','木の材料で家を造る。','ki no zairyō de ie o tsukuru','Constroem a casa com material de madeira.'],
+  ['n2','気温の差で、低い山にも雪が積もった。','kion no sa de, hikui yama ni mo yuki ga tsumotta','Com a diferença de temperatura, a neve se acumulou até nas montanhas baixas.'],
+  ['n2','橋で湾を渡る。','hashi de wan o wataru','Atravesso a baía pela ponte.'],
+  ['n2','記録された歌の評価が高い。','kiroku sareta uta no hyōka ga takai','A avaliação da música gravada é alta.'],
+  ['n2','週末は専門の勉強をする。','shūmatsu wa senmon no benkyō o suru','No fim de semana estudo a minha especialidade.'],
+  ['n2','脳の働きを観察する。','nō no hataraki o kansatsu suru','Observo o funcionamento do cérebro.'],
+  ['n2','蔵の中に古い財産がある。','kura no naka ni furui zaisan ga aru','Dentro do armazém há bens antigos.'],
+  ['n2','この地域の階段は古い。','kono chiiki no kaidan wa furui','As escadas desta região são antigas.'],
+  ['n2','敗れた試合も記録に残る。','yabureta shiai mo kiroku ni nokoru','Até os jogos perdidos ficam no registro.'],
+  ['n2','丸い字は書き易い。','marui ji wa kakiyasui','Letras redondas são fáceis de escrever.'],
+  ['n2','授業では説明を省かない。','jugyō de wa setsumei o habukanai','Na aula não corto as explicações.'],
 ];
 
 const FR_TIERS = [
