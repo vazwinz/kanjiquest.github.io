@@ -886,6 +886,10 @@ const SENTENCES = [
   ['n2','家畜について先生に伺った。','kachiku ni tsuite sensei ni ukagatta','Perguntei respeitosamente ao professor sobre o gado.'],
   ['n2','憎むより肯定する方がいい。','nikumu yori kōtei suru hō ga ii','Melhor afirmar do que odiar.'],
   ['n2','赤ん坊の手に水の滴が落ちた。','akanbō no te ni mizu no shizuku ga ochita','Uma gota de água caiu na mão do bebê.'],
+  /* ── lote 11 ── */
+  ['n2','患者は瓶の薬を飲む。','kanja wa bin no kusuri o nomu','O paciente toma o remédio do vidro.'],
+  ['n2','海に船が一隻見えて、砂に足跡が残った。','umi ni fune ga isseki miete, suna ni ashiato ga nokotta','Um navio apareceu no mar e pegadas ficaram na areia.'],
+  ['n2','外国籍の友だちと缶のお茶を飲んだ。','gaikokuseki no tomodachi to kan no ocha o nonda','Tomei chá de lata com meu amigo de nacionalidade estrangeira.'],
 ];
 
 const FR_TIERS = [

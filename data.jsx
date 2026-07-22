@@ -1455,6 +1455,15 @@ const GLYPHS = [
   { id:'曇', kw:'nublado', kun:'くも.る (kumoru)', on:'ドン (don)', lvl:'N2', cls:'verbo', phon:'semantico', parts:['日','雲'], use:'曇り (くもり, kumori)', story:'O sol (日) engolido pelas nuvens (雲): o céu fechado, nublado.' },
   { id:'滴', kw:'gota · pingar', kun:'しずく (shizuku)', on:'テキ (teki)', lvl:'N2', cls:'substantivo', phon:'fonetico', phonUsers:'適', parts:['水','立','口'], use:'滴 (しずく, shizuku)', story:'A água (水) que fica de pé (立) na boca (口) da torneira antes de cair: a gota.' },
   { id:'伺', kw:'perguntar humilde · visitar', kun:'うかが.う (ukagau)', on:'シ (shi)', lvl:'N2', cls:'verbo', phon:'fonetico', phonUsers:'司・詞', parts:['人','司'], use:'伺う (うかがう, ukagau)', story:'A pessoa (人) diante de quem administra (司), pedindo licença: perguntar com respeito.' },
+  // ---------------------------------------------------------------
+  // LOTE #11 — 6 N2 modernos que eram nível 1 antigo (患跡籍缶瓶隻)
+  // ---------------------------------------------------------------
+  { id:'患', kw:'doente · sofrer de', kun:'わずら.う (wazurau)', on:'カン (kan)', lvl:'N2', cls:'verbo', phon:'semantico', parts:['中','心'], use:'患者 (かんじゃ, kanja)', story:'A flecha espetada no meio (中) do coração (心): sofrer da doença por dentro.' },
+  { id:'跡', kw:'rastro · vestígio', kun:'あと (ato)', on:'セキ (seki)', lvl:'N2', cls:'substantivo', phon:'semantico', parts:['足'], use:'跡 (あと, ato)', story:'O pé (足) que já passou mas deixou a marca no chão: o rastro.' },
+  { id:'籍', kw:'registro · nacionalidade', kun:'—', on:'セキ (seki)', lvl:'N2', cls:'substantivo', phon:'fonetico', phonUsers:'昔', parts:['竹','昔'], use:'国籍 (こくせき, kokuseki)', story:'As tábuas de bambu (竹) guardando nomes desde antigamente (昔): o registro oficial.' },
+  { id:'缶', kw:'lata', kun:'—', on:'カン (kan)', lvl:'N2', cls:'substantivo', phon:'semantico', parts:[], use:'缶 (かん, kan)', story:'O pote de boca estreita e corpo fechado: a lata que guarda e conserva.' },
+  { id:'瓶', kw:'garrafa · jarro', kun:'—', on:'ビン (bin)', lvl:'N2', cls:'substantivo', phon:'semantico', parts:[], use:'瓶 (びん, bin)', story:'Duas metades de barro unidas no forno: a garrafa de pescoço fino.' },
+  { id:'隻', kw:'contador de navios', kun:'—', on:'セキ (seki)', lvl:'N2', cls:'substantivo', phon:'semantico', parts:['隹','又'], use:'一隻 (いっせき, isseki)', story:'O pássaro (隹) pousado na mão (又), contado um a um: um navio, dois navios.' },
 ];
 
 const PART_LABELS = {};
