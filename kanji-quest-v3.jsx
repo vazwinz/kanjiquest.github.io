@@ -29,7 +29,7 @@ function App(){
   const { useTweaks, TweaksPanel, TweakSection, TweakColor, TweakToggle, TweakSlider, TweakButton } = window;
   const [t, setTweak] = useTweaks(TWEAK_DEFAULTS);
   const [tab, setTab] = useState('estudos');
-  const [studyStats, setStudyStats] = useState({ points:0, collection:0, inSession:false });
+  const [studyStats, setStudyStats] = useState({ collection:0, inSession:false });
 
   useEffect(()=>{
     const root=document.documentElement;
@@ -96,7 +96,6 @@ function App(){
           <div className="topbar-right">
             {tab==='estudos'
               ? <div className="stats">
-                  <div className="stat"><div className="num">{studyStats.points}</div><div className="lab">Pontos</div></div>
                   <div className="stat"><div className="num">{studyStats.collection}</div><div className="lab">Coleção</div></div>
                 </div>
               : <div className="stats">
@@ -122,7 +121,7 @@ function App(){
           </button>
         </div>
 
-        {tab==='estudos'   && <window.Studies showNeuro={t.showNeuro} newPerSession={t.newPerSession} onPoints={setStudyStats} />}
+        {tab==='estudos'   && <window.Studies showNeuro={t.showNeuro} newPerSession={t.newPerSession} onStats={setStudyStats} />}
         {tab==='challenge' && <window.Challenge />}
         {tab==='frases'    && <window.Frases />}
         {tab==='buscar'    && <window.Buscar />}

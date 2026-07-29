@@ -388,7 +388,7 @@ function Summary({ state, result, onHome, onRedo, redoSize, redoDone }) {
 /* ============================================================
    COMPONENTE PRINCIPAL: Studies
    ============================================================ */
-function Studies({ showNeuro, newPerSession, onPoints }) {
+function Studies({ showNeuro, newPerSession, onStats }) {
   const [state, setState] = useStateS(() => {
     const loaded = window.SRS.load();
     if (loaded && loaded.cards) {if (!loaded.born) loaded.born = loaded.now;return loaded;}
@@ -400,7 +400,6 @@ function Studies({ showNeuro, newPerSession, onPoints }) {
   const [queue, setQueue] = useStateS([]);
   const [qi, setQi] = useStateS(0);
   const [phase, setPhase] = useStateS('main');
-  const [points, setPoints] = useStateS(0);
   const [streak, setStreak] = useStateS(0);
   const [stamp, setStamp] = useStateS(false);
   const result = useRefS({ learned: 0, reviewed: 0, correct: 0, answered: 0 });
@@ -416,7 +415,7 @@ function Studies({ showNeuro, newPerSession, onPoints }) {
   const [redoDone, setRedoDone] = useStateS(false);
 
   const learnedTotal = window.SRS.learnedCount(state);
-  useEffectS(() => {onPoints && onPoints({ points, collection: learnedTotal, inSession: screen === 'session' });}, [points, learnedTotal, screen]);
+  useEffectS(() => {onStats && onStats({ collection: learnedTotal, inSession: screen === 'session' });}, [learnedTotal, screen]);
 
   const persist = useCallbackS((s) => {window.SRS.save(s);setState({ ...s });}, []);
   const meaningPool = useMemoS(() => window.GLYPHS.map((g) => g.kw), []);
@@ -452,7 +451,7 @@ function Studies({ showNeuro, newPerSession, onPoints }) {
   function trainingResult(ok) {
     const item = queue[qi];
     if (ok) {
-      const ns = streak + 1;setStreak(ns);setPoints((p) => p + 5);fireStamp();
+      const ns = streak + 1;setStreak(ns);fireStamp();
       window.Sfx.correct();if (ns >= 3 && ns % 3 === 0) window.Sfx.streak(Math.floor(ns / 3));
     } else {redoWrong.current = [...redoWrong.current, item];setStreak(0);window.Sfx.wrong();}
     nextItem();
@@ -466,7 +465,7 @@ function Studies({ showNeuro, newPerSession, onPoints }) {
     if (training) return trainingResult(ok);
     result.current.answered++;
     if (ok) {
-      result.current.correct++;const ns = streak + 1;setStreak(ns);setPoints((p) => p + 10);fireStamp();
+      result.current.correct++;const ns = streak + 1;setStreak(ns);fireStamp();
       window.Sfx.correct();if (ns >= 3 && ns % 3 === 0) window.Sfx.streak(Math.floor(ns / 3));
     } else {setStreak(0);window.Sfx.wrong();}
     nextItem();
@@ -476,14 +475,14 @@ function Studies({ showNeuro, newPerSession, onPoints }) {
     const id = queue[qi].id;
     window.SRS.review(state, id, ok);result.current.reviewed++;result.current.answered++;
     if (ok) {
-      result.current.correct++;const ns = streak + 1;setStreak(ns);setPoints((p) => p + 10 + ns * 2);fireStamp();
+      result.current.correct++;const ns = streak + 1;setStreak(ns);fireStamp();
       window.Sfx.correct();if (ns >= 3 && ns % 3 === 0) window.Sfx.streak(Math.floor(ns / 3));
     } else {setStreak(0);window.Sfx.wrong();}
     persist(state);nextItem();
   }
   function advanceDay() {window.SRS.advanceDays(state, 1);persist(state);}
   function fixClock() {window.SRS.clearOffset(state);persist(state);}
-  function reset() {const s = window.SRS.blank();s.born = s.now;persist(s);setScreen('dash');setPoints(0);setStreak(0);}
+  function reset() {const s = window.SRS.blank();s.born = s.now;persist(s);setScreen('dash');setStreak(0);}
 
   let body;
   if (screen === 'dash') {
@@ -513,7 +512,7 @@ function Studies({ showNeuro, newPerSession, onPoints }) {
           <div className="sprog">
             {queue.map((s, i) => <div key={i} className={'sseg ' + (i < qi ? 'done' : i === qi ? 'active' : '')}><span className="fill"></span></div>)}
           </div>
-          <div className="scount">{qi + 1} / {queue.length} · {training ? `refazendo · rodada ${redoRound}` : queue[qi].kind === 'learn' ? 'aprendendo' : 'revisando'} · {points} pts · 🔥 {streak}</div>
+          <div className="scount">{qi + 1} / {queue.length} · {training ? `refazendo · rodada ${redoRound}` : queue[qi].kind === 'learn' ? 'aprendendo' : 'revisando'} · 🔥 {streak}</div>
         </>
       }
       <div className="stage">{body}</div>
