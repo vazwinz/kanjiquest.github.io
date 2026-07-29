@@ -37,15 +37,20 @@ function learnedGlyphs(){
   catch(e){ return []; }
 }
 
-/* os N mais recentemente aprendidos, do mais novo pro mais antigo */
+/* os N mais recentemente aprendidos, do mais novo pro mais antigo.
+   cards aprendidos antes de 20/07/2026 não têm learnedAt — usa a ordem de
+   inserção (índice) como aproximação: quanto mais tarde inserido, mais recente.
+   timestamps reais (~1e12) sempre vencem os índices, como esperado.
+   resolve/filtra ANTES do slice pra ids órfãos não encolherem o resultado. */
 function recentGlyphs(n){
   try{
     const st=window.SRS.load(); if(!st||!st.cards) return [];
     return Object.entries(st.cards)
-      .sort((a,b)=>(b[1].learnedAt||0)-(a[1].learnedAt||0))
+      .map(([id,c],i)=>({ g: window.GLYPHS.find(x=>x.id===id), key: c.learnedAt || i }))
+      .filter(o=>o.g)
+      .sort((a,b)=>b.key-a.key)
       .slice(0,n)
-      .map(([id])=>window.GLYPHS.find(g=>g.id===id))
-      .filter(Boolean);
+      .map(o=>o.g);
   }catch(e){ return []; }
 }
 
