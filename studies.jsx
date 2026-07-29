@@ -259,7 +259,7 @@ function LearnStep({ g, onIntroduce, showNeuro }) {
 }
 
 /* ---------- REVISÃO (recuperação ativa + grade SRS por escolha real, não autoavaliação) ---------- */
-function ReviewStep({ state, id, pool, onGrade, showNeuro }) {
+function ReviewStep({ state, id, pool, onGrade, showNeuro, training }) {
   const g = window.G(id);
   const [revealed, setRevealed] = useStateS(false);
   const [picked, setPicked] = useStateS(null);
@@ -311,7 +311,7 @@ function ReviewStep({ state, id, pool, onGrade, showNeuro }) {
               <div className="sub">{g.story}</div>
               <div className="rd">{g.kun !== '—' && <span className="chip"><b>kun</b>{g.kun}</span>}<span className="chip"><b>on</b>{g.on}</span></div>
               <ExFrase id={g.id} />
-              <div className="gi" style={{ marginTop: 8 }}>{isCorrect ? `próxima em ${nextOk}` : `revisar em ${nextBad}`}</div>
+              <div className="gi" style={{ marginTop: 8 }}>{training ? 'treino · agendamento intacto' : isCorrect ? `próxima em ${nextOk}` : `revisar em ${nextBad}`}</div>
             </div>
           }
         </>
@@ -346,7 +346,7 @@ function QuickCheck({ id, pool, onResult, showNeuro }) {
 }
 
 /* ---------- RESUMO DA SESSÃO ---------- */
-function Summary({ state, result, onHome }) {
+function Summary({ state, result, onHome, onRedo, redoSize, redoDone }) {
   const acc = result.answered ? Math.round(100 * result.correct / result.answered) : 100;
   const upcoming = Object.keys(state.cards).map((id) => ({ id, due: state.cards[id].due })).sort((a, b) => a.due - b.due).slice(0, 5);
   const fmt = (due) => {
@@ -372,7 +372,15 @@ function Summary({ state, result, onHome }) {
         <div className="rrow" key={u.id}><div className="rk">{u.id}</div><div className="rm">{window.G(u.id).kw}</div><div className="rt">{fmt(u.due)}</div></div>
         )}
       </div>
-      <div className="actions"><button className="btn btn-primary" onClick={onHome}>Voltar ao painel</button></div>
+      <div className="actions">
+        {redoSize > 0 &&
+        <button className="btn btn-ghost" onClick={onRedo} title="Repete a sessão até você acertar tudo. Não mexe no agendamento.">
+            {redoDone ? 'Refazer de novo' : `Refazer · ${redoSize} itens`}
+          </button>
+        }
+        <button className="btn btn-primary" onClick={onHome}>Voltar ao painel</button>
+      </div>
+      {redoDone && <p className="sub" style={{ marginTop: 10 }}>Rodada limpa — você acertou tudo no treino. O agendamento acima continua o mesmo.</p>}
     </div>);
 
 }
@@ -396,6 +404,16 @@ function Studies({ showNeuro, newPerSession, onPoints }) {
   const [streak, setStreak] = useStateS(0);
   const [stamp, setStamp] = useStateS(false);
   const result = useRefS({ learned: 0, reviewed: 0, correct: 0, answered: 0 });
+  /* REFAZER — treino depois do resumo: repete a sessão até sair uma rodada
+     limpa. NÃO encosta no SRS: o erro da sessão real já foi registrado e é
+     ele que manda no agendamento; aqui é só martelar a memória. A 1ª rodada
+     leva a fila inteira (pra reforçar também o que acertou), e as seguintes
+     só o que caiu, até esvaziar. */
+  const sessionQueue = useRefS([]);
+  const redoWrong = useRefS([]);
+  const [training, setTraining] = useStateS(false);
+  const [redoRound, setRedoRound] = useStateS(0);
+  const [redoDone, setRedoDone] = useStateS(false);
 
   const learnedTotal = window.SRS.learnedCount(state);
   useEffectS(() => {onPoints && onPoints({ points, collection: learnedTotal, inSession: screen === 'session' });}, [points, learnedTotal, screen]);
@@ -407,17 +425,45 @@ function Studies({ showNeuro, newPerSession, onPoints }) {
     const q = window.SRS.buildSession(state, newPerSession, window.SRS.focusSet(focus));
     if (!q.length) return;
     setQueue(q);setQi(0);setPhase('main');
+    sessionQueue.current = q;setTraining(false);setRedoRound(0);setRedoDone(false);
     result.current = { learned: 0, reviewed: 0, correct: 0, answered: 0 };
     setScreen('session');
   }
+  /* dispara o Refazer a partir do resumo: rodada 1 = a fila original inteira */
+  function startRedo() {
+    const base = sessionQueue.current;
+    if (!base.length) return;
+    redoWrong.current = [];
+    setQueue(base);setQi(0);setPhase('main');
+    setTraining(true);setRedoRound(1);setRedoDone(false);
+    setScreen('session');
+  }
+  function goHome() {setTraining(false);setScreen('dash');}
   function fireStamp() {setStamp(true);setTimeout(() => setStamp(false), 700);}
-  function nextItem() {if (qi + 1 >= queue.length) {setScreen('summary');} else {setQi(qi + 1);setPhase('main');}}
+  function nextItem() {
+    if (qi + 1 < queue.length) {setQi(qi + 1);setPhase('main');return;}
+    if (!training) {setScreen('summary');return;}
+    const again = redoWrong.current;
+    if (!again.length) {setTraining(false);setRedoDone(true);setScreen('summary');return;}
+    redoWrong.current = [];
+    setQueue(again);setQi(0);setPhase('main');setRedoRound((r) => r + 1);
+  }
+  /* resposta dentro do Refazer: só decide se o item volta na próxima rodada */
+  function trainingResult(ok) {
+    const item = queue[qi];
+    if (ok) {
+      const ns = streak + 1;setStreak(ns);setPoints((p) => p + 5);fireStamp();
+      window.Sfx.correct();if (ns >= 3 && ns % 3 === 0) window.Sfx.streak(Math.floor(ns / 3));
+    } else {redoWrong.current = [...redoWrong.current, item];setStreak(0);window.Sfx.wrong();}
+    nextItem();
+  }
 
   function onIntroduce() {
     const id = queue[qi].id;
     window.SRS.introduce(state, id);result.current.learned++;persist(state);setPhase('check');
   }
   function onCheckResult(ok) {
+    if (training) return trainingResult(ok);
     result.current.answered++;
     if (ok) {
       result.current.correct++;const ns = streak + 1;setStreak(ns);setPoints((p) => p + 10);fireStamp();
@@ -426,6 +472,7 @@ function Studies({ showNeuro, newPerSession, onPoints }) {
     nextItem();
   }
   function onGrade(ok) {
+    if (training) return trainingResult(ok);
     const id = queue[qi].id;
     window.SRS.review(state, id, ok);result.current.reviewed++;result.current.answered++;
     if (ok) {
@@ -442,15 +489,20 @@ function Studies({ showNeuro, newPerSession, onPoints }) {
   if (screen === 'dash') {
     body = <Dashboard state={state} onStudy={startSession} onAdvanceDay={advanceDay} onFixClock={fixClock} onReset={reset} newPerSession={newPerSession} focus={focus} onFocus={setFocus} />;
   } else if (screen === 'summary') {
-    body = <Summary state={state} result={result.current} onHome={() => setScreen('dash')} />;
+    body = <Summary state={state} result={result.current} onHome={goHome} onRedo={startRedo} redoSize={sessionQueue.current.length} redoDone={redoDone} />;
   } else {
     const item = queue[qi];
-    if (item.kind === 'learn') {
+    // no Refazer a rodada entra no key pra o passo remontar do zero a cada volta
+    const k = (training ? 't' + redoRound + '-' : '') + qi;
+    if (item.kind === 'learn' && !training) {
       body = phase === 'main' ?
-      <LearnStep key={'l' + qi} g={window.G(item.id)} onIntroduce={onIntroduce} showNeuro={showNeuro} /> :
-      <QuickCheck key={'c' + qi} id={item.id} pool={meaningPool} onResult={onCheckResult} showNeuro={showNeuro} />;
+      <LearnStep key={'l' + k} g={window.G(item.id)} onIntroduce={onIntroduce} showNeuro={showNeuro} /> :
+      <QuickCheck key={'c' + k} id={item.id} pool={meaningPool} onResult={onCheckResult} showNeuro={showNeuro} />;
+    } else if (item.kind === 'learn') {
+      // já leu o mnemônico nesta sessão — no treino vai direto pra pergunta
+      body = <QuickCheck key={'c' + k} id={item.id} pool={meaningPool} onResult={onCheckResult} showNeuro={showNeuro} />;
     } else {
-      body = <ReviewStep key={'r' + qi} state={state} id={item.id} pool={meaningPool} onGrade={onGrade} showNeuro={showNeuro} />;
+      body = <ReviewStep key={'r' + k} state={state} id={item.id} pool={meaningPool} onGrade={onGrade} showNeuro={showNeuro} training={training} />;
     }
   }
 
@@ -461,7 +513,7 @@ function Studies({ showNeuro, newPerSession, onPoints }) {
           <div className="sprog">
             {queue.map((s, i) => <div key={i} className={'sseg ' + (i < qi ? 'done' : i === qi ? 'active' : '')}><span className="fill"></span></div>)}
           </div>
-          <div className="scount">{qi + 1} / {queue.length} · {queue[qi].kind === 'learn' ? 'aprendendo' : 'revisando'} · {points} pts · 🔥 {streak}</div>
+          <div className="scount">{qi + 1} / {queue.length} · {training ? `refazendo · rodada ${redoRound}` : queue[qi].kind === 'learn' ? 'aprendendo' : 'revisando'} · {points} pts · 🔥 {streak}</div>
         </>
       }
       <div className="stage">{body}</div>
